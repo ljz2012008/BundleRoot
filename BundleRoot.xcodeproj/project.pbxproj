@@ -12,6 +12,9 @@
 		1D617A1C1EE9496400AADA3B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D617A1B1EE9496400AADA3B /* ViewController.m */; };
 		1D617A1E1EE9496400AADA3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D617A1D1EE9496400AADA3B /* Assets.xcassets */; };
 		1D617A211EE9496400AADA3B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1D617A1F1EE9496400AADA3B /* Main.storyboard */; };
+		1D617A2A1EEE2BCC00AADA3B /* FileSystemNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D617A291EEE2BCC00AADA3B /* FileSystemNode.m */; };
+		1D617A2D1EEE2BE900AADA3B /* FileSystemBrowserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D617A2C1EEE2BE900AADA3B /* FileSystemBrowserCell.m */; };
+		1D617A301EEE7E3F00AADA3B /* WindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D617A2F1EEE7E3F00AADA3B /* WindowController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +27,12 @@
 		1D617A1D1EE9496400AADA3B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1D617A201EE9496400AADA3B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1D617A221EE9496400AADA3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1D617A281EEE2BCC00AADA3B /* FileSystemNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSystemNode.h; sourceTree = "<group>"; };
+		1D617A291EEE2BCC00AADA3B /* FileSystemNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileSystemNode.m; sourceTree = "<group>"; };
+		1D617A2B1EEE2BE900AADA3B /* FileSystemBrowserCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSystemBrowserCell.h; sourceTree = "<group>"; };
+		1D617A2C1EEE2BE900AADA3B /* FileSystemBrowserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileSystemBrowserCell.m; sourceTree = "<group>"; };
+		1D617A2E1EEE7E3F00AADA3B /* WindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowController.h; sourceTree = "<group>"; };
+		1D617A2F1EEE7E3F00AADA3B /* WindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WindowController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,8 +67,14 @@
 			children = (
 				1D617A141EE9496300AADA3B /* AppDelegate.h */,
 				1D617A151EE9496300AADA3B /* AppDelegate.m */,
+				1D617A2E1EEE7E3F00AADA3B /* WindowController.h */,
+				1D617A2F1EEE7E3F00AADA3B /* WindowController.m */,
 				1D617A1A1EE9496400AADA3B /* ViewController.h */,
 				1D617A1B1EE9496400AADA3B /* ViewController.m */,
+				1D617A281EEE2BCC00AADA3B /* FileSystemNode.h */,
+				1D617A291EEE2BCC00AADA3B /* FileSystemNode.m */,
+				1D617A2B1EEE2BE900AADA3B /* FileSystemBrowserCell.h */,
+				1D617A2C1EEE2BE900AADA3B /* FileSystemBrowserCell.m */,
 				1D617A1D1EE9496400AADA3B /* Assets.xcassets */,
 				1D617A1F1EE9496400AADA3B /* Main.storyboard */,
 				1D617A221EE9496400AADA3B /* Info.plist */,
@@ -147,7 +162,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D617A1C1EE9496400AADA3B /* ViewController.m in Sources */,
+				1D617A301EEE7E3F00AADA3B /* WindowController.m in Sources */,
 				1D617A191EE9496400AADA3B /* main.m in Sources */,
+				1D617A2D1EEE2BE900AADA3B /* FileSystemBrowserCell.m in Sources */,
+				1D617A2A1EEE2BCC00AADA3B /* FileSystemNode.m in Sources */,
 				1D617A161EE9496300AADA3B /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -207,7 +225,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -249,7 +267,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 			};
@@ -298,6 +316,7 @@
 				1D617A271EE9496400AADA3B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
