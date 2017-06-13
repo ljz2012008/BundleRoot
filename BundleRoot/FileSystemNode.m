@@ -138,7 +138,7 @@
         // This logic keeps the same pointers around, if possible.
         NSMutableArray *newChildren = [NSMutableArray array];
         
-        CFURLEnumeratorRef enumerator = CFURLEnumeratorCreateForDirectoryURL(NULL, (CFURLRef)self.URL, kCFURLEnumeratorSkipInvisibles, (CFArrayRef)[NSArray array]);
+        CFURLEnumeratorRef enumerator = CFURLEnumeratorCreateForDirectoryURL(NULL, (CFURLRef)self.URL, kCFURLEnumeratorDefaultBehavior, (CFArrayRef)[NSArray array]);
         CFURLRef childURL = nil;
         CFURLEnumeratorResult enumeratorResult;
         do {

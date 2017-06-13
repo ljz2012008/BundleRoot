@@ -10,6 +10,9 @@
 
 @interface AppDelegate ()
 
+@property (weak) IBOutlet NSWindowController *brWindowController;
+@property (weak) IBOutlet NSViewController *brViewController;
+
 @end
 
 @implementation AppDelegate
@@ -27,5 +30,8 @@
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
     return YES;
 }
+
+
+
 
 @end
