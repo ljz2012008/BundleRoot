@@ -12,27 +12,42 @@
 
 #import "BRNotification.h"
 
-typedef NS_ENUM(NSUInteger, BRBundleModelType) {
-    BREFI = 0,
-    BROS = 1,
-    BRBaseband = 2,
-    BRGrapeRoot = 3,
-    BRWifi,
-    BRbblib,
-    BRWipaMini,
-};
+//#import <XADMaster/XADPlatform.h>
+//#import <XADMaster/XADSimpleUnarchiver.h>
+
+#import "ZipFileOperation.h"
+#import "RemainingTimeTransformer.h"
+#import "ZipKit/ZKFileArchive.h"
+#import "ZipKit/ZKDataArchive.h"
+#import "ZipKit/ZKLog.h"
+#import "ZipKit/ZKDefs.h"
+#import "ZipKit/NSFileManager+ZKAdditions.h"
+
+#define BREFI @"BREFI"
+#define BROS @"BROS"
+#define BRBaseband @"BRBaseband"
+#define BRGrapeRoot @"BRGrapeRoot"
+#define BRMesa @"BRMesa"
+#define BRWifi @"BRWifi"
+#define BRPWifi @"BRPWifi"
+#define BRBT @"BRBT"
+#define BRbblib @"BRbblib"
+#define BRWipaMini @"BRWipaMini"
 
 @interface ViewController () <NSBrowserDelegate>
 
 @property (weak) IBOutlet NSTextField *overlayNameTextField;
-
 @property (weak) IBOutlet NSBrowser *mainFolderBrower;
+@property (unsafe_unretained) IBOutlet NSTextView *logTextView;
+
 
 @property (weak) IBOutlet NSButton *efiButton;
 @property (weak) IBOutlet NSButton *osButton;
 @property (weak) IBOutlet NSButton *basebandButton;
 @property (weak) IBOutlet NSButton *graperootButton;
+@property (weak) IBOutlet NSButton *mesaButton;
 @property (weak) IBOutlet NSButton *wifiButton;
+@property (weak) IBOutlet NSButton *pwifiButton;
 @property (weak) IBOutlet NSButton *btButton;
 @property (weak) IBOutlet NSButton *bblibButton;
 @property (weak) IBOutlet NSButton *wipaminiButton;
@@ -41,12 +56,16 @@ typedef NS_ENUM(NSUInteger, BRBundleModelType) {
 @property (weak) IBOutlet NSPopUpButton *osPopupButton;
 @property (weak) IBOutlet NSPopUpButton *basebandPopupButton;
 @property (weak) IBOutlet NSPopUpButton *graperootPopupButton;
+@property (weak) IBOutlet NSPopUpButton *mesaPopupButton;
 @property (weak) IBOutlet NSPopUpButton *wifiPopupButton;
+@property (weak) IBOutlet NSPopUpButton *pwifiPopupButton;
 @property (weak) IBOutlet NSPopUpButton *btPopupButton;
 @property (weak) IBOutlet NSPopUpButton *bblibPopupButton;
 @property (weak) IBOutlet NSPopUpButton *wipaminiPopupButton;
 
 @property (strong) FileSystemNode *rootNode;
+
+@property (strong) NSOpenPanel *panel;
 
 @property (strong) NSMutableDictionary *bundleDic;
 
@@ -58,8 +77,20 @@ typedef NS_ENUM(NSUInteger, BRBundleModelType) {
     [super viewDidLoad];
 
     // Do any additional setup after loading the view.
+    _panel = [NSOpenPanel openPanel];
     [self.mainFolderBrower setCellClass:[FileSystemBrowserCell class]];
     
+    _bundleDic = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                  @"1", BREFI,
+                  @"1", BROS,
+                  @"1", BRBaseband,
+                  @"1", BRGrapeRoot,
+                  @"1", BRMesa,
+                  @"1", BRWifi,
+                  @"1", BRPWifi,
+                  @"1", BRBT,
+                  @"1", BRbblib,
+                  @"1", BRWipaMini, nil];
     
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(__reloadBrowerWithFilePath:) name:BRNewOverlayNotification object:nil];
@@ -139,8 +170,12 @@ typedef NS_ENUM(NSUInteger, BRBundleModelType) {
         [_basebandPopupButton setEnabled:[_basebandButton state] ? YES : NO];
     } else if (sender == _graperootButton) {
         [_graperootPopupButton setEnabled:[_graperootButton state] ? YES : NO];
+    } else if (sender == _mesaButton) {
+        [_mesaPopupButton setEnabled:[_mesaButton state] ? YES : NO];
     } else if (sender == _wifiButton) {
         [_wifiPopupButton setEnabled:[_wifiButton state] ? YES : NO];
+    } else if (sender == _pwifiButton) {
+        [_pwifiPopupButton setEnabled:[_pwifiButton state] ? YES : NO];
     } else if (sender == _btButton) {
         [_btPopupButton setEnabled:[_btButton state] ? YES : NO];
     } else if (sender == _bblibButton) {
@@ -152,21 +187,72 @@ typedef NS_ENUM(NSUInteger, BRBundleModelType) {
 
 - (IBAction)newBundle:(id)sender
 {
-    NSOpenPanel *panel = [NSOpenPanel openPanel];
-    [panel setAllowsMultipleSelection:NO];
-    [panel setCanChooseDirectories:YES];
-    [panel setCanChooseFiles:YES];
+    [_panel setAllowsMultipleSelection:NO];
+    [_panel setCanChooseDirectories:YES];
+    [_panel setCanChooseFiles:YES];
 //    [panel setAllowedFileTypes:@[@"zip"]];
-    [panel setAllowsOtherFileTypes:YES];
+    [_panel setAllowsOtherFileTypes:YES];
     
-    [panel beginSheetModalForWindow:self.view.window completionHandler:^(NSInteger result) {
+    [_panel beginSheetModalForWindow:self.view.window completionHandler:^(NSInteger result) {
         
         if (result == NSModalResponseOK) {
             
-            NSString *path = [panel.URLs.firstObject path];
-
+            NSString *path = [_panel.URLs.firstObject path];
             NSString *filePath = path;
             
+            NSArray *elements = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:filePath error:nil];
+            
+            NSPopUpButton *tempPop;
+            if ([_efiPopupButton indexOfItem:sender] == 0) {
+                [_bundleDic setObject:filePath forKey:BREFI];
+                tempPop = _efiPopupButton;
+            } else if ([_osPopupButton indexOfItem:sender] == 0) {
+                [_bundleDic setObject:filePath forKey:BROS];
+                tempPop = _osPopupButton;
+            } else if ([_basebandPopupButton indexOfItem:sender] == 0) {
+                [_bundleDic setObject:filePath forKey:BRBaseband];
+                tempPop = _basebandPopupButton;
+            } else if ([_graperootPopupButton indexOfItem:sender] == 0) {
+                [_bundleDic setObject:filePath forKey:BRGrapeRoot];
+                tempPop = _graperootPopupButton;
+            } else if ([_mesaPopupButton indexOfItem:sender] == 0) {
+                [_bundleDic setObject:filePath forKey:BRMesa];
+                tempPop = _mesaPopupButton;
+            }  else if ([_wifiPopupButton indexOfItem:sender] == 0) {
+                [_bundleDic setObject:filePath forKey:BRWifi];
+                tempPop = _wifiPopupButton;
+            }  else if ([_pwifiPopupButton indexOfItem:sender] == 0) {
+                [_bundleDic setObject:filePath forKey:BRPWifi];
+                tempPop = _pwifiPopupButton;
+            } else if ([_btPopupButton indexOfItem:sender] == 0) {
+                [_bundleDic setObject:filePath forKey:BRBT];
+                tempPop = _btPopupButton;
+            } else if ([_bblibPopupButton indexOfItem:sender] == 0) {
+                [_bundleDic setObject:filePath forKey:BRbblib];
+                tempPop = _bblibPopupButton;
+            } else if ([_wipaminiPopupButton indexOfItem:sender] == 0) {
+                [_bundleDic setObject:filePath forKey:BRWipaMini];
+                tempPop = _wipaminiPopupButton;
+            }
+            
+            NSUInteger totalMenuCont = [tempPop numberOfItems];
+            for (int i = 2; totalMenuCont > i; i ++) {
+                [tempPop removeItemAtIndex:2];
+            }
+            
+            for (NSString *element in elements) {
+                if ([element containsString:@"DS_Store"]) {
+                    continue;
+                }
+                BOOL isDir = NO;
+                
+                [[NSFileManager defaultManager] fileExistsAtPath:[path stringByAppendingFormat:@"/%@", element] isDirectory:&isDir];
+                if (isDir) {
+                    continue;
+                }
+                
+                [tempPop addItemWithTitle:element];
+            }
         }
     }];
 }
