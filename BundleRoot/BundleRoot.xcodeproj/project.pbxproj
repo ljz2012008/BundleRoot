@@ -28,6 +28,7 @@
 		1D4E04011EF27022000710C9 /* UniversalDetector.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1D4E03FF1EF27022000710C9 /* UniversalDetector.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1D4E04031EF27027000710C9 /* XADMaster.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D4E03BF1EF26919000710C9 /* XADMaster.framework */; };
 		1D4E04041EF27027000710C9 /* XADMaster.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1D4E03BF1EF26919000710C9 /* XADMaster.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1D4E04091EF67974000710C9 /* BRUnarchiverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D4E04081EF67974000710C9 /* BRUnarchiverController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -215,6 +216,8 @@
 		1D4E03761EF255B0000710C9 /* ProgressWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressWindowController.xib; sourceTree = "<group>"; };
 		1D4E03AB1EF26918000710C9 /* XADMaster.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = XADMaster.xcodeproj; path = XADMaster/XADMaster.xcodeproj; sourceTree = "<group>"; };
 		1D4E03FF1EF27022000710C9 /* UniversalDetector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = UniversalDetector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D4E04071EF67974000710C9 /* BRUnarchiverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BRUnarchiverController.h; sourceTree = "<group>"; };
+		1D4E04081EF67974000710C9 /* BRUnarchiverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BRUnarchiverController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -259,6 +262,8 @@
 				1D4E035E1EF25426000710C9 /* WindowController.m */,
 				1D4E032B1EF252C2000710C9 /* ViewController.h */,
 				1D4E032C1EF252C2000710C9 /* ViewController.m */,
+				1D4E04071EF67974000710C9 /* BRUnarchiverController.h */,
+				1D4E04081EF67974000710C9 /* BRUnarchiverController.m */,
 				1D4E032E1EF252C2000710C9 /* Assets.xcassets */,
 				1D4E03301EF252C2000710C9 /* Main.storyboard */,
 				1D4E03661EF25436000710C9 /* View */,
@@ -571,6 +576,7 @@
 				1D4E03771EF255B0000710C9 /* ProgressWindowController.m in Sources */,
 				1D4E03541EF25400000710C9 /* RemainingTimeTransformer.m in Sources */,
 				1D4E036C1EF25451000710C9 /* FileSystemNode.m in Sources */,
+				1D4E04091EF67974000710C9 /* BRUnarchiverController.m in Sources */,
 				1D4E03641EF25426000710C9 /* WindowController.m in Sources */,
 				1D4E03551EF25400000710C9 /* ZipFileOperation.m in Sources */,
 				1D4E03531EF25400000710C9 /* MOView.m in Sources */,
