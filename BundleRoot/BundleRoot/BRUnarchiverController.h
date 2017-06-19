@@ -12,8 +12,7 @@
 
 @property (strong) NSString *archiveName;
 @property (strong) NSString *destinationPath;
-@property (weak) id finishTarget;
-@property (assign) SEL finishSelector;
+
 
 - (id)initWithFilename:(NSString *)filename;
 - (void)runWithFinishAction:(SEL)selector target:(id)target;

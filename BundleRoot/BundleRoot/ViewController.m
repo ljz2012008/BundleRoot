@@ -279,7 +279,7 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
 
 - (void)unarchiverControllerFinish:(BRUnarchiverController *)archiveController
 {
-    NSLog(@"%s", __FUNCTION__);
+    NSLog(@"%@ : Finish", archiveController.archiveName);
 }
 
 #pragma mark - NSNotification
@@ -306,15 +306,64 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
 
 - (void)__checkBundle
 {
-    if ([_efiButton state] ==1) {
-        NSString *efiPath = [_bundleDic objectForKey:BREFI];
-        NSString *efiName = [_efiPopupButton titleOfSelectedItem];
-        NSString *path = [efiPath stringByAppendingFormat:@"/%@", efiName];
-        
-        BRUnarchiverController *unarchiver = [[BRUnarchiverController alloc] initWithFilename:path];
-        unarchiver.destinationPath = [path stringByDeletingLastPathComponent];
-        [unarchiver runWithFinishAction:@selector(unarchiverControllerFinish:) target:self];
+    if ([_efiButton state] ==1 && [_efiPopupButton indexOfSelectedItem] > 1) {
+        NSString *path = [_bundleDic objectForKey:BREFI];
+        NSString *name = [_efiPopupButton titleOfSelectedItem];
+        [self exeUnarchiveWithFileName:name relatedPath:path];
     }
+    if ([_osButton state] ==1 && [_osPopupButton indexOfSelectedItem] > 1) {
+        NSString *path = [_bundleDic objectForKey:BROS];
+        NSString *name = [_osPopupButton titleOfSelectedItem];
+        [self exeUnarchiveWithFileName:name relatedPath:path];
+    }
+    if ([_basebandButton state] ==1 && [_basebandPopupButton indexOfSelectedItem] > 1) {
+        NSString *path = [_bundleDic objectForKey:BRBaseband];
+        NSString *name = [_basebandPopupButton titleOfSelectedItem];
+        [self exeUnarchiveWithFileName:name relatedPath:path];
+    }
+    if ([_graperootButton state] ==1 && [_graperootPopupButton indexOfSelectedItem] > 1) {
+        NSString *path = [_bundleDic objectForKey:BRGrapeRoot];
+        NSString *name = [_graperootPopupButton titleOfSelectedItem];
+        [self exeUnarchiveWithFileName:name relatedPath:path];
+    }
+    if ([_mesaButton state] ==1 && [_mesaPopupButton indexOfSelectedItem] > 1) {
+        NSString *path = [_bundleDic objectForKey:BRMesa];
+        NSString *name = [_mesaPopupButton titleOfSelectedItem];
+        [self exeUnarchiveWithFileName:name relatedPath:path];
+    }
+    if ([_wifiButton state] ==1 && [_wifiPopupButton indexOfSelectedItem] > 1) {
+        NSString *path = [_bundleDic objectForKey:BRWifi];
+        NSString *name = [_wifiPopupButton titleOfSelectedItem];
+        [self exeUnarchiveWithFileName:name relatedPath:path];
+    }
+    if ([_pwifiButton state] ==1 && [_pwifiPopupButton indexOfSelectedItem] > 1) {
+        NSString *path = [_bundleDic objectForKey:BRPWifi];
+        NSString *name = [_pwifiPopupButton titleOfSelectedItem];
+        [self exeUnarchiveWithFileName:name relatedPath:path];
+    }
+    if ([_btButton state] ==1 && [_btPopupButton indexOfSelectedItem] > 1) {
+        NSString *path = [_bundleDic objectForKey:BRBT];
+        NSString *name = [_btPopupButton titleOfSelectedItem];
+        [self exeUnarchiveWithFileName:name relatedPath:path];
+    }
+    if ([_bblibButton state] ==1 && [_bblibPopupButton indexOfSelectedItem] > 1) {
+        NSString *path = [_bundleDic objectForKey:BRbblib];
+        NSString *name = [_bblibPopupButton titleOfSelectedItem];
+        [self exeUnarchiveWithFileName:name relatedPath:path];
+    }
+    if ([_wipaminiButton state] ==1 && [_wipaminiPopupButton indexOfSelectedItem] > 1) {
+        NSString *path = [_bundleDic objectForKey:BRWipaMini];
+        NSString *name = [_wipaminiPopupButton titleOfSelectedItem];
+        [self exeUnarchiveWithFileName:name relatedPath:path];
+    }
+}
+
+- (void)exeUnarchiveWithFileName:(NSString *)name relatedPath:(NSString *)relatedPath
+{
+    NSString *path = [relatedPath stringByAppendingFormat:@"/%@", name];
+    BRUnarchiverController *unarchiver = [[BRUnarchiverController alloc] initWithFilename:path];
+    unarchiver.destinationPath = [path stringByDeletingPathExtension];
+    [unarchiver runWithFinishAction:@selector(unarchiverControllerFinish:) target:self];
 }
 
 //- (NSString *)__bundleUnarchive:(NSString *)path relatedPath:(NSString *)relatedPath

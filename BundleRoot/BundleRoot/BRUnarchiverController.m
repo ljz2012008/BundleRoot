@@ -13,8 +13,10 @@
 
 
 @interface BRUnarchiverController ()
-
-
+{
+    id finishTarget;
+    SEL finishSelector;
+}
 
 @property (assign) BOOL cancelled;
 
@@ -26,14 +28,16 @@
 {
     if ((self = [super init])) {
         _archiveName = filename;
+        finishTarget = nil;
+        finishSelector = NULL;
     }
     return self;
 }
 
 - (void)runWithFinishAction:(SEL)selector target:(id)target
 {
-    _finishTarget = target;
-    _finishSelector = selector;
+    finishTarget = target;
+    finishSelector = selector;
     
     [NSThread detachNewThreadSelector:@selector(executeExtractThread) toTarget:self withObject:nil];
 }
@@ -47,18 +51,18 @@
 {
     NSString *destinationPath;
     NSString *path = _archiveName;
-    destinationPath = [path stringByDeletingPathExtension];
+    destinationPath = [path stringByDeletingLastPathComponent];
     
     if([XADPlatform fileExistsAtPath:path])
     {
         XADError openerror;
         XADSimpleUnarchiver *unarchiver=[XADSimpleUnarchiver simpleUnarchiverForPath:path error:&openerror];
-        
-        [unarchiver setDestination:_destinationPath];
-        [unarchiver setRemovesEnclosingDirectoryForSoloItems:NO];
-        [unarchiver setEnclosingDirectoryName:NO];
+        [unarchiver setEnclosingDirectoryName:[[path lastPathComponent] stringByDeletingPathExtension]];
+        [unarchiver setDestination:destinationPath];
+        [unarchiver setRemovesEnclosingDirectoryForSoloItems:YES];
+//        [unarchiver setEnclosingDirectoryName:NO];
         [unarchiver setAlwaysOverwritesFiles:NO];
-        [unarchiver setAlwaysRenamesFiles:NO];
+        [unarchiver setAlwaysRenamesFiles:YES];
         [unarchiver setAlwaysSkipsFiles:NO];
         [unarchiver setExtractsSubArchives:YES];
         [unarchiver setPropagatesRelevantMetadata:YES];
@@ -70,7 +74,7 @@
 //        [unarchiver setRemovesEnclosingDirectoryForSoloItems:YES];
         XADError parseerror=[unarchiver parse];
         XADError unarchiveerror = [unarchiver unarchive];
-        
+
         if(parseerror) { }
         if(unarchiveerror) { }
     }
@@ -78,7 +82,8 @@
     if ([path rangeOfString:@"Baseband"].location != NSNotFound) {
         destinationPath = [path stringByDeletingLastPathComponent];
     }
-//    return path;
+    
+    [finishTarget performSelector:finishSelector withObject:self];
 }
 
 #pragma mark - XADSimpleUnarchiverDelegate
@@ -91,10 +96,13 @@
 //{
 //    return YES;
 //}
-//-(void)simpleUnarchiver:(XADSimpleUnarchiver *)unarchiver willExtractEntryWithDictionary:(NSDictionary *)dict to:(NSString *)path
-//{
-//
-//}
+
+-(void)simpleUnarchiver:(XADSimpleUnarchiver *)unarchiver willExtractEntryWithDictionary:(NSDictionary *)dict to:(NSString *)path
+{
+    XADPath *name=[dict objectForKey:XADFileNameKey];
+    
+}
+
 //-(void)simpleUnarchiver:(XADSimpleUnarchiver *)unarchiver didExtractEntryWithDictionary:(NSDictionary *)dict to:(NSString *)path error:(XADError)error
 //{
 //
@@ -128,13 +136,14 @@
 //        [_sheetViewController.percentTextField setStringValue:[NSString stringWithFormat:@"%lu%%", progressInt]];
 //    });
     
-    NSLog(@"Total Progress: %lu%%", progressInt);
+    NSLog(@"TopName : %@, Total Progress: %lu%%",
+          [[unarchiver destination] lastPathComponent], progressInt);
 }
 
 -(void)simpleUnarchiver:(XADSimpleUnarchiver *)unarchiver estimatedExtractionProgressForEntryWithDictionary:(NSDictionary *)dict
            fileProgress:(double)fileprogress totalProgress:(double)totalprogress
 {
-//    NSLog(@"Progress: %f", fileprogress/totalprogress);
+    NSLog(@"gz Total Progress: %f%%", 100*totalprogress);
 }
 
 @end
