@@ -33,6 +33,7 @@
 @property (weak) IBOutlet NSTextField *overlayNameTextField;
 @property (weak) IBOutlet NSBrowser *mainFolderBrower;
 @property (unsafe_unretained) IBOutlet NSTextView *logTextView;
+@property (strong) NSMutableString *logTxT;
 
 
 @property (weak) IBOutlet NSButton *efiButton;
@@ -71,6 +72,7 @@
     [super viewDidLoad];
 
     // Do any additional setup after loading the view.
+    _logTxT = [NSMutableString new];
     _panel = [NSOpenPanel openPanel];
     [self.mainFolderBrower setCellClass:[FileSystemBrowserCell class]];
     
@@ -87,8 +89,12 @@
                   @"1", BRWipaMini, nil];
     
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(__reloadBrowerWithFilePath:) name:BRNewOverlayNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(__checkBundle) name:BRCheckBundleNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(__reloadBrowerWithFilePath:)
+                                                 name:BRNewOverlayNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(__checkBundle)
+                                                 name:BRCheckBundleNotification object:nil];
     
 //    [ZKFileArchive process:@"/Users/foolery/Desktop/int" usingResourceFork:YES withInvoker:nil andDelegate:self];
 }
@@ -96,7 +102,6 @@
 
 - (void)setRepresentedObject:(id)representedObject {
     [super setRepresentedObject:representedObject];
-
     // Update the view, if already loaded.
 }
 
@@ -154,8 +159,6 @@
 {
     return 400;
 }
-
-
 
 #pragma mark - Action
 
@@ -274,7 +277,10 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
     }];
 }
 
-
+- (void)unarchiverControllerFinish:(BRUnarchiverController *)archiveController
+{
+    NSLog(@"%s", __FUNCTION__);
+}
 
 #pragma mark - NSNotification
 - (void)__reloadBrowerWithFilePath:(NSNotification *)objc
@@ -306,12 +312,9 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
         NSString *path = [efiPath stringByAppendingFormat:@"/%@", efiName];
         
         BRUnarchiverController *unarchiver = [[BRUnarchiverController alloc] initWithFilename:path];
-        
-        [unarchiver runWithFinishAction:nil target:nil];
-//        [NSThread detachNewThreadSelector:@selector(__bundleUnarchive:relatedPath:) toTarget:self withObject:efiPath];
-//        [self __bundleUnarchive:path relatedPath:efiPath];
+        unarchiver.destinationPath = [path stringByDeletingLastPathComponent];
+        [unarchiver runWithFinishAction:@selector(unarchiverControllerFinish:) target:self];
     }
-    
 }
 
 //- (NSString *)__bundleUnarchive:(NSString *)path relatedPath:(NSString *)relatedPath

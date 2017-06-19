@@ -268,7 +268,7 @@
 				1D4E03301EF252C2000710C9 /* Main.storyboard */,
 				1D4E03661EF25436000710C9 /* View */,
 				1D4E036D1EF25455000710C9 /* Node */,
-				1D4E03561EF25405000710C9 /* New Group */,
+				1D4E03561EF25405000710C9 /* Third */,
 				1D4E03281EF252C2000710C9 /* Supporting Files */,
 			);
 			path = BundleRoot;
@@ -304,7 +304,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		1D4E03561EF25405000710C9 /* New Group */ = {
+		1D4E03561EF25405000710C9 /* Third */ = {
 			isa = PBXGroup;
 			children = (
 				1D4E034D1EF25400000710C9 /* MOView.h */,
@@ -314,7 +314,7 @@
 				1D4E03511EF25400000710C9 /* ZipFileOperation.h */,
 				1D4E03521EF25400000710C9 /* ZipFileOperation.m */,
 			);
-			name = "New Group";
+			name = Third;
 			sourceTree = "<group>";
 		};
 		1D4E03661EF25436000710C9 /* View */ = {

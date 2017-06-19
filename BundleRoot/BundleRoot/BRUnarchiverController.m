@@ -14,11 +14,7 @@
 
 @interface BRUnarchiverController ()
 
-@property (strong) NSString *archiveName;
-@property (strong) NSString *destinationPath;
 
-@property (weak) id finishTarget;
-@property (assign) SEL finishSelector;
 
 @property (assign) BOOL cancelled;
 
@@ -53,7 +49,7 @@
     NSString *path = _archiveName;
     destinationPath = [path stringByDeletingPathExtension];
     
-    if([path rangeOfString:@"Baseband"].location == NSNotFound && ![XADPlatform fileExistsAtPath:path])
+    if([XADPlatform fileExistsAtPath:path])
     {
         XADError openerror;
         XADSimpleUnarchiver *unarchiver=[XADSimpleUnarchiver simpleUnarchiverForPath:path error:&openerror];
@@ -71,7 +67,7 @@
         [unarchiver setMacResourceForkStyle:YES];
         //
         [unarchiver setDelegate:self];
-        //        [unarchiver setRemovesEnclosingDirectoryForSoloItems:YES];
+//        [unarchiver setRemovesEnclosingDirectoryForSoloItems:YES];
         XADError parseerror=[unarchiver parse];
         XADError unarchiveerror = [unarchiver unarchive];
         
@@ -127,10 +123,10 @@
 {
     NSUInteger progressInt = 100*totalprogress/totalsize;
     
-    //    dispatch_sync(dispatch_get_main_queue(), ^{
-    //        [_sheetViewController updateProgress:progressInt];
-    //        [_sheetViewController.percentTextField setStringValue:[NSString stringWithFormat:@"%lu%%", progressInt]];
-    //    });
+//    dispatch_sync(dispatch_get_main_queue(), ^{
+//        [_sheetViewController updateProgress:progressInt];
+//        [_sheetViewController.percentTextField setStringValue:[NSString stringWithFormat:@"%lu%%", progressInt]];
+//    });
     
     NSLog(@"Total Progress: %lu%%", progressInt);
 }
@@ -138,7 +134,7 @@
 -(void)simpleUnarchiver:(XADSimpleUnarchiver *)unarchiver estimatedExtractionProgressForEntryWithDictionary:(NSDictionary *)dict
            fileProgress:(double)fileprogress totalProgress:(double)totalprogress
 {
-    //    NSLog(@"Progress: %f", fileprogress/totalprogress);
+//    NSLog(@"Progress: %f", fileprogress/totalprogress);
 }
 
 @end

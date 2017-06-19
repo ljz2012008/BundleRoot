@@ -1150,14 +1150,14 @@
                                             <rect key="frame" x="0.0" y="0.0" width="357" height="322"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" ambiguous="YES" id="mMu-9Q-oVh">
-                                                <rect key="frame" x="2" y="2" width="338" height="318"/>
+                                                <rect key="frame" x="2" y="2" width="353" height="318"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textView ambiguous="YES" importsGraphics="NO" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="tv4-vW-1LT">
-                                                        <rect key="frame" x="0.0" y="-1" width="338" height="318"/>
+                                                        <rect key="frame" x="0.0" y="-1" width="353" height="318"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="338" height="318"/>
+                                                        <size key="minSize" width="353" height="318"/>
                                                         <size key="maxSize" width="463" height="10000000"/>
                                                         <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     </textView>
@@ -1169,7 +1169,7 @@
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="pVf-zs-TrB">
-                                                <rect key="frame" x="340" y="2" width="15" height="318"/>
+                                                <rect key="frame" x="339" y="2" width="16" height="318"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                         </scrollView>
