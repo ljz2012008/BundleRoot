@@ -9,6 +9,10 @@
 #import "ViewController.h"
 #import "FileSystemNode.h"
 #import "FileSystemBrowserCell.h"
+#import "BundleEntity.h"
+
+#import "BRCheckboxCellView.h"
+#import "BRPopUpCellView.h"
 
 #import "BRNotification.h"
 
@@ -17,52 +21,25 @@
 
 #import "BRUnarchiverController.h"
 
-#define BREFI @"BREFI"
-#define BROS @"BROS"
-#define BRBaseband @"BRBaseband"
-#define BRGrapeRoot @"BRGrapeRoot"
-#define BRMesa @"BRMesa"
-#define BRWifi @"BRWifi"
-#define BRPWifi @"BRPWifi"
-#define BRBT @"BRBT"
-#define BRbblib @"BRbblib"
-#define BRWipaMini @"BRWipaMini"
 
-@interface ViewController () <NSBrowserDelegate>
+
+@interface ViewController () <NSBrowserDelegate, BRUnarchiverToMainControllerDelegate, NSTableViewDelegate, NSTableViewDataSource>
 
 @property (weak) IBOutlet NSTextField *overlayNameTextField;
 @property (weak) IBOutlet NSBrowser *mainFolderBrower;
 @property (unsafe_unretained) IBOutlet NSTextView *logTextView;
 @property (strong) NSMutableString *logTxT;
 
+@property (weak) IBOutlet NSTableView *bTableView;
 
-@property (weak) IBOutlet NSButton *efiButton;
-@property (weak) IBOutlet NSButton *osButton;
-@property (weak) IBOutlet NSButton *basebandButton;
-@property (weak) IBOutlet NSButton *graperootButton;
-@property (weak) IBOutlet NSButton *mesaButton;
-@property (weak) IBOutlet NSButton *wifiButton;
-@property (weak) IBOutlet NSButton *pwifiButton;
-@property (weak) IBOutlet NSButton *btButton;
-@property (weak) IBOutlet NSButton *bblibButton;
-@property (weak) IBOutlet NSButton *wipaminiButton;
-
-@property (weak) IBOutlet NSPopUpButton *efiPopupButton;
-@property (weak) IBOutlet NSPopUpButton *osPopupButton;
-@property (weak) IBOutlet NSPopUpButton *basebandPopupButton;
-@property (weak) IBOutlet NSPopUpButton *graperootPopupButton;
-@property (weak) IBOutlet NSPopUpButton *mesaPopupButton;
-@property (weak) IBOutlet NSPopUpButton *wifiPopupButton;
-@property (weak) IBOutlet NSPopUpButton *pwifiPopupButton;
-@property (weak) IBOutlet NSPopUpButton *btPopupButton;
-@property (weak) IBOutlet NSPopUpButton *bblibPopupButton;
-@property (weak) IBOutlet NSPopUpButton *wipaminiPopupButton;
+@property (weak) id keepObj;
 
 @property (strong) FileSystemNode *rootNode;
 
 @property (strong) NSOpenPanel *panel;
 
 @property (strong) NSMutableDictionary *bundleDic;
+@property (strong) NSMutableArray *bundleArr;
 
 @end
 
@@ -87,7 +64,15 @@
                   @"1", BRBT,
                   @"1", BRbblib,
                   @"1", BRWipaMini, nil];
+    _bundleArr = [NSMutableArray new];
+    NSArray *tempArr = @[BREFI, BROS, BRBaseband, BRGrapeRoot, BRMesa, BRWifi, BRPWifi, BRBT, BRbblib, BRWipaMini];
+    for (NSString *keyStr in tempArr) {
+        BundleEntity *tempEntity = [[BundleEntity alloc] initWithTypeName:keyStr];
+        [_bundleArr addObject:tempEntity];
+    }
     
+    _logTxT = [NSMutableString stringWithFormat:@"Unarchive:\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n", varString(BREFI), varString(BROS),varString(BRBaseband),varString(BRGrapeRoot),varString(BRMesa),varString(BRWifi),varString(BRPWifi),varString(BRBT), varString(BRbblib), varString(BRWipaMini)];
+    [_logTextView setString:_logTxT];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(__reloadBrowerWithFilePath:)
@@ -95,6 +80,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(__checkBundle)
                                                  name:BRCheckBundleNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(popUpBtnAction:)
+                                                 name:NSPopUpButtonWillPopUpNotification object:nil];
     
 //    [ZKFileArchive process:@"/Users/foolery/Desktop/int" usingResourceFork:YES withInvoker:nil andDelegate:self];
 }
@@ -104,6 +92,9 @@
     [super setRepresentedObject:representedObject];
     // Update the view, if already loaded.
 }
+
+#pragma mark - BRUnarchiverToMainControllerDelegate
+
 
 #pragma mark - NSBrowserDelegate
 - (id)rootItemForBrowser:(NSBrowser *)browser
@@ -160,31 +151,44 @@
     return 400;
 }
 
+#pragma mark - NSTableViewDataSource
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
+{
+    return _bundleArr ? [_bundleArr count] : 0;
+}
+
+
+#pragma mark - NSTableViewDelegate
+- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    NSString *identifier = [tableColumn identifier];
+    NSTableCellView *cellView = nil;
+    if ([identifier isEqualToString:@"Column1"]) {
+        BRCheckboxCellView *cellView = [tableView makeViewWithIdentifier:identifier owner:self];
+        BundleEntity *entity = _bundleArr[row];
+        [cellView.checkBoxBtn setTitle:entity.bundleType];
+        return cellView;
+    } else if ([identifier isEqualToString:@"Column2"]) {
+        BRPopUpCellView *cellView = [tableView makeViewWithIdentifier:identifier owner:self];
+        return cellView;
+    }
+    return cellView;
+}
+
+- (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row
+{
+    return 22;
+}
+
 #pragma mark - Action
 
-- (IBAction)bundleAction:(id)sender
+- (IBAction)enableBundleAction:(id)sender
 {
-    if (sender == _efiButton) {
-        [_efiPopupButton setEnabled:[_efiButton state] ? YES : NO];
-    } else if (sender == _osButton) {
-        [_osPopupButton setEnabled:[_osButton state] ? YES : NO];
-    } else if (sender == _basebandButton) {
-        [_basebandPopupButton setEnabled:[_basebandButton state] ? YES : NO];
-    } else if (sender == _graperootButton) {
-        [_graperootPopupButton setEnabled:[_graperootButton state] ? YES : NO];
-    } else if (sender == _mesaButton) {
-        [_mesaPopupButton setEnabled:[_mesaButton state] ? YES : NO];
-    } else if (sender == _wifiButton) {
-        [_wifiPopupButton setEnabled:[_wifiButton state] ? YES : NO];
-    } else if (sender == _pwifiButton) {
-        [_pwifiPopupButton setEnabled:[_pwifiButton state] ? YES : NO];
-    } else if (sender == _btButton) {
-        [_btPopupButton setEnabled:[_btButton state] ? YES : NO];
-    } else if (sender == _bblibButton) {
-        [_bblibPopupButton setEnabled:[_bblibButton state] ? YES : NO];
-    } else if (sender == _wipaminiButton) {
-        [_wipaminiPopupButton setEnabled:[_wipaminiButton state] ? YES : NO];
-    }
+    NSInteger rowIndex = [_bTableView rowForView:sender];
+    BundleEntity *cellEntity = _bundleArr[rowIndex];
+    BRPopUpCellView *cellView = [_bTableView viewAtColumn:1 row:rowIndex makeIfNecessary:NO];
+    [cellView.popUpBtn setEnabled:[sender state] ? YES : NO];
+    [cellEntity setIsSelected:[sender state] ? YES : NO];
 }
 
 // Mark - String Programming Guide called "Sorting strings like Finder"
@@ -203,12 +207,17 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
                      locale:(__bridge NSLocale *)locale];
 }
 
-- (IBAction)newBundle:(id)sender
+- (void)popUpBtnAction:(NSNotification *)sender
+{
+    _keepObj = [sender object];
+}
+
+- (IBAction)choseFile:(NSMenuItem *)sender
 {
     [_panel setAllowsMultipleSelection:NO];
     [_panel setCanChooseDirectories:YES];
     [_panel setCanChooseFiles:YES];
-    //    [panel setAllowedFileTypes:@[@"zip"]];
+//    [panel setAllowedFileTypes:@[@"zip"]];
     [_panel setAllowsOtherFileTypes:YES];
     
     [_panel beginSheetModalForWindow:self.view.window completionHandler:^(NSInteger result) {
@@ -216,44 +225,19 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
         if (result == NSModalResponseOK) {
             
             NSString *path = [_panel.URLs.firstObject path];
-            NSString *filePath = path;
-            
-            NSArray *elements = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:filePath error:nil];
+            NSArray *elements = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:nil];
             elements = [elements sortedArrayUsingFunction:finderSortWithLocale
                                                   context:(__bridge void *)([NSLocale currentLocale])];
             
-            NSPopUpButton *tempPop;
-            if ([_efiPopupButton indexOfItem:sender] == 0) {
-                [_bundleDic setObject:filePath forKey:BREFI];
-                tempPop = _efiPopupButton;
-            } else if ([_osPopupButton indexOfItem:sender] == 0) {
-                [_bundleDic setObject:filePath forKey:BROS];
-                tempPop = _osPopupButton;
-            } else if ([_basebandPopupButton indexOfItem:sender] == 0) {
-                [_bundleDic setObject:filePath forKey:BRBaseband];
-                tempPop = _basebandPopupButton;
-            } else if ([_graperootPopupButton indexOfItem:sender] == 0) {
-                [_bundleDic setObject:filePath forKey:BRGrapeRoot];
-                tempPop = _graperootPopupButton;
-            } else if ([_mesaPopupButton indexOfItem:sender] == 0) {
-                [_bundleDic setObject:filePath forKey:BRMesa];
-                tempPop = _mesaPopupButton;
-            }  else if ([_wifiPopupButton indexOfItem:sender] == 0) {
-                [_bundleDic setObject:filePath forKey:BRWifi];
-                tempPop = _wifiPopupButton;
-            }  else if ([_pwifiPopupButton indexOfItem:sender] == 0) {
-                [_bundleDic setObject:filePath forKey:BRPWifi];
-                tempPop = _pwifiPopupButton;
-            } else if ([_btPopupButton indexOfItem:sender] == 0) {
-                [_bundleDic setObject:filePath forKey:BRBT];
-                tempPop = _btPopupButton;
-            } else if ([_bblibPopupButton indexOfItem:sender] == 0) {
-                [_bundleDic setObject:filePath forKey:BRbblib];
-                tempPop = _bblibPopupButton;
-            } else if ([_wipaminiPopupButton indexOfItem:sender] == 0) {
-                [_bundleDic setObject:filePath forKey:BRWipaMini];
-                tempPop = _wipaminiPopupButton;
-            }
+            NSInteger rowIndex = [_bTableView rowForView:_keepObj];
+            if (rowIndex < 0) return;
+            BundleEntity *cellEntity = _bundleArr[rowIndex];
+            cellEntity.bundleRelatedPath = path;
+            [cellEntity.bundleSets removeAllObjects];
+            
+            BRPopUpCellView *cellView = [_bTableView viewAtColumn:1 row:rowIndex makeIfNecessary:NO];
+            
+            NSPopUpButton *tempPop = cellView.popUpBtn;
             
             NSUInteger totalMenuCont = [tempPop numberOfItems];
             for (int i = 2; totalMenuCont > i; i ++) {
@@ -271,6 +255,7 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
                     continue;
                 }
                 
+                [cellEntity.bundleSets addObject:element];
                 [tempPop addItemWithTitle:element];
             }
         }
@@ -306,63 +291,23 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
 
 - (void)__checkBundle
 {
-    if ([_efiButton state] ==1 && [_efiPopupButton indexOfSelectedItem] > 1) {
-        NSString *path = [_bundleDic objectForKey:BREFI];
-        NSString *name = [_efiPopupButton titleOfSelectedItem];
-        [self exeUnarchiveWithFileName:name relatedPath:path];
-    }
-    if ([_osButton state] ==1 && [_osPopupButton indexOfSelectedItem] > 1) {
-        NSString *path = [_bundleDic objectForKey:BROS];
-        NSString *name = [_osPopupButton titleOfSelectedItem];
-        [self exeUnarchiveWithFileName:name relatedPath:path];
-    }
-    if ([_basebandButton state] ==1 && [_basebandPopupButton indexOfSelectedItem] > 1) {
-        NSString *path = [_bundleDic objectForKey:BRBaseband];
-        NSString *name = [_basebandPopupButton titleOfSelectedItem];
-        [self exeUnarchiveWithFileName:name relatedPath:path];
-    }
-    if ([_graperootButton state] ==1 && [_graperootPopupButton indexOfSelectedItem] > 1) {
-        NSString *path = [_bundleDic objectForKey:BRGrapeRoot];
-        NSString *name = [_graperootPopupButton titleOfSelectedItem];
-        [self exeUnarchiveWithFileName:name relatedPath:path];
-    }
-    if ([_mesaButton state] ==1 && [_mesaPopupButton indexOfSelectedItem] > 1) {
-        NSString *path = [_bundleDic objectForKey:BRMesa];
-        NSString *name = [_mesaPopupButton titleOfSelectedItem];
-        [self exeUnarchiveWithFileName:name relatedPath:path];
-    }
-    if ([_wifiButton state] ==1 && [_wifiPopupButton indexOfSelectedItem] > 1) {
-        NSString *path = [_bundleDic objectForKey:BRWifi];
-        NSString *name = [_wifiPopupButton titleOfSelectedItem];
-        [self exeUnarchiveWithFileName:name relatedPath:path];
-    }
-    if ([_pwifiButton state] ==1 && [_pwifiPopupButton indexOfSelectedItem] > 1) {
-        NSString *path = [_bundleDic objectForKey:BRPWifi];
-        NSString *name = [_pwifiPopupButton titleOfSelectedItem];
-        [self exeUnarchiveWithFileName:name relatedPath:path];
-    }
-    if ([_btButton state] ==1 && [_btPopupButton indexOfSelectedItem] > 1) {
-        NSString *path = [_bundleDic objectForKey:BRBT];
-        NSString *name = [_btPopupButton titleOfSelectedItem];
-        [self exeUnarchiveWithFileName:name relatedPath:path];
-    }
-    if ([_bblibButton state] ==1 && [_bblibPopupButton indexOfSelectedItem] > 1) {
-        NSString *path = [_bundleDic objectForKey:BRbblib];
-        NSString *name = [_bblibPopupButton titleOfSelectedItem];
-        [self exeUnarchiveWithFileName:name relatedPath:path];
-    }
-    if ([_wipaminiButton state] ==1 && [_wipaminiPopupButton indexOfSelectedItem] > 1) {
-        NSString *path = [_bundleDic objectForKey:BRWipaMini];
-        NSString *name = [_wipaminiPopupButton titleOfSelectedItem];
-        [self exeUnarchiveWithFileName:name relatedPath:path];
+    for (int i = 0; i < [_bundleArr count]; i++) {
+        BRPopUpCellView *cellView = [_bTableView viewAtColumn:1 row:i makeIfNecessary:NO];
+        BundleEntity *cellEntity = _bundleArr[i];
+        
+        if (cellEntity.isSelected && [cellView.popUpBtn indexOfSelectedItem] > 1) {
+            cellEntity.bundleName = [cellView.popUpBtn titleOfSelectedItem];
+            cellEntity.bundleFullPath = [cellEntity.bundleRelatedPath stringByAppendingFormat:@"/%@", cellEntity.bundleName];
+            [self exeUnarchiveWithBundleEntity:cellEntity];
+        }
     }
 }
 
-- (void)exeUnarchiveWithFileName:(NSString *)name relatedPath:(NSString *)relatedPath
+- (void)exeUnarchiveWithBundleEntity:(BundleEntity *)entity
 {
-    NSString *path = [relatedPath stringByAppendingFormat:@"/%@", name];
-    BRUnarchiverController *unarchiver = [[BRUnarchiverController alloc] initWithFilename:path];
-    unarchiver.destinationPath = [path stringByDeletingPathExtension];
+    BRUnarchiverController *unarchiver = [[BRUnarchiverController alloc] initWithFilename:entity.bundleFullPath];
+    unarchiver.archiveType = entity.bundleType;
+    unarchiver.destinationPath = entity.bundleRelatedPath;
     [unarchiver runWithFinishAction:@selector(unarchiverControllerFinish:) target:self];
 }
 

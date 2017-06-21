@@ -11,7 +11,6 @@
 #import <XADMaster/XADSimpleUnarchiver.h>
 #import <XADMaster/XADPlatform.h>
 
-
 @interface BRUnarchiverController ()
 {
     id finishTarget;
@@ -79,10 +78,6 @@
         if(unarchiveerror) { }
     }
     
-    if ([path rangeOfString:@"Baseband"].location != NSNotFound) {
-        destinationPath = [path stringByDeletingLastPathComponent];
-    }
-    
     [finishTarget performSelector:finishSelector withObject:self];
 }
 
@@ -145,5 +140,7 @@
 {
     NSLog(@"gz Total Progress: %f%%", 100*totalprogress);
 }
+
+#pragma mark - XADSimpleUnarchiverDelegate
 
 @end

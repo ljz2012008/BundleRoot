@@ -8,10 +8,19 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol BRUnarchiverToMainControllerDelegate <NSObject>
+
+- (void)updateProgressWith:(double)dProgress target:(id)targetObj;
+
+@end
+
 @interface BRUnarchiverController : NSObject
 
+@property (strong) NSString *archiveType;
 @property (strong) NSString *archiveName;
 @property (strong) NSString *destinationPath;
+
+@property (weak) id mainControllerDelegate;
 
 
 - (id)initWithFilename:(NSString *)filename;

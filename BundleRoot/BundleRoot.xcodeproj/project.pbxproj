@@ -29,6 +29,9 @@
 		1D4E04031EF27027000710C9 /* XADMaster.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D4E03BF1EF26919000710C9 /* XADMaster.framework */; };
 		1D4E04041EF27027000710C9 /* XADMaster.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1D4E03BF1EF26919000710C9 /* XADMaster.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1D4E04091EF67974000710C9 /* BRUnarchiverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D4E04081EF67974000710C9 /* BRUnarchiverController.m */; };
+		1D4E041F1EFA0C34000710C9 /* BundleEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D4E041E1EFA0C34000710C9 /* BundleEntity.m */; };
+		1D4E04221EFA4C63000710C9 /* BRCheckboxCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D4E04211EFA4C63000710C9 /* BRCheckboxCellView.m */; };
+		1D4E04251EFA4C94000710C9 /* BRPopUpCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D4E04241EFA4C94000710C9 /* BRPopUpCellView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -218,6 +221,12 @@
 		1D4E03FF1EF27022000710C9 /* UniversalDetector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = UniversalDetector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D4E04071EF67974000710C9 /* BRUnarchiverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BRUnarchiverController.h; sourceTree = "<group>"; };
 		1D4E04081EF67974000710C9 /* BRUnarchiverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BRUnarchiverController.m; sourceTree = "<group>"; };
+		1D4E041D1EFA0C34000710C9 /* BundleEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BundleEntity.h; sourceTree = "<group>"; };
+		1D4E041E1EFA0C34000710C9 /* BundleEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundleEntity.m; sourceTree = "<group>"; };
+		1D4E04201EFA4C63000710C9 /* BRCheckboxCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BRCheckboxCellView.h; sourceTree = "<group>"; };
+		1D4E04211EFA4C63000710C9 /* BRCheckboxCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BRCheckboxCellView.m; sourceTree = "<group>"; };
+		1D4E04231EFA4C94000710C9 /* BRPopUpCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BRPopUpCellView.h; sourceTree = "<group>"; };
+		1D4E04241EFA4C94000710C9 /* BRPopUpCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BRPopUpCellView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -264,8 +273,11 @@
 				1D4E032C1EF252C2000710C9 /* ViewController.m */,
 				1D4E04071EF67974000710C9 /* BRUnarchiverController.h */,
 				1D4E04081EF67974000710C9 /* BRUnarchiverController.m */,
-				1D4E032E1EF252C2000710C9 /* Assets.xcassets */,
+				1D4E03741EF255B0000710C9 /* ProgressWindowController.h */,
+				1D4E03751EF255B0000710C9 /* ProgressWindowController.m */,
+				1D4E03761EF255B0000710C9 /* ProgressWindowController.xib */,
 				1D4E03301EF252C2000710C9 /* Main.storyboard */,
+				1D4E032E1EF252C2000710C9 /* Assets.xcassets */,
 				1D4E03661EF25436000710C9 /* View */,
 				1D4E036D1EF25455000710C9 /* Node */,
 				1D4E03561EF25405000710C9 /* Third */,
@@ -324,9 +336,10 @@
 				1D4E03581EF25426000710C9 /* Toolbar.m */,
 				1D4E03591EF25426000710C9 /* ToolbarItem.h */,
 				1D4E035A1EF25426000710C9 /* ToolbarItem.m */,
-				1D4E03741EF255B0000710C9 /* ProgressWindowController.h */,
-				1D4E03751EF255B0000710C9 /* ProgressWindowController.m */,
-				1D4E03761EF255B0000710C9 /* ProgressWindowController.xib */,
+				1D4E04201EFA4C63000710C9 /* BRCheckboxCellView.h */,
+				1D4E04211EFA4C63000710C9 /* BRCheckboxCellView.m */,
+				1D4E04231EFA4C94000710C9 /* BRPopUpCellView.h */,
+				1D4E04241EFA4C94000710C9 /* BRPopUpCellView.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -338,6 +351,8 @@
 				1D4E03681EF25451000710C9 /* FileSystemBrowserCell.m */,
 				1D4E03691EF25451000710C9 /* FileSystemNode.h */,
 				1D4E036A1EF25451000710C9 /* FileSystemNode.m */,
+				1D4E041D1EFA0C34000710C9 /* BundleEntity.h */,
+				1D4E041E1EFA0C34000710C9 /* BundleEntity.m */,
 			);
 			name = Node;
 			sourceTree = "<group>";
@@ -573,7 +588,9 @@
 				1D4E032D1EF252C2000710C9 /* ViewController.m in Sources */,
 				1D4E032A1EF252C2000710C9 /* main.m in Sources */,
 				1D4E03621EF25426000710C9 /* ToolbarItem.m in Sources */,
+				1D4E041F1EFA0C34000710C9 /* BundleEntity.m in Sources */,
 				1D4E03771EF255B0000710C9 /* ProgressWindowController.m in Sources */,
+				1D4E04221EFA4C63000710C9 /* BRCheckboxCellView.m in Sources */,
 				1D4E03541EF25400000710C9 /* RemainingTimeTransformer.m in Sources */,
 				1D4E036C1EF25451000710C9 /* FileSystemNode.m in Sources */,
 				1D4E04091EF67974000710C9 /* BRUnarchiverController.m in Sources */,
@@ -582,6 +599,7 @@
 				1D4E03531EF25400000710C9 /* MOView.m in Sources */,
 				1D4E03271EF252C2000710C9 /* AppDelegate.m in Sources */,
 				1D4E03611EF25426000710C9 /* Toolbar.m in Sources */,
+				1D4E04251EFA4C94000710C9 /* BRPopUpCellView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
