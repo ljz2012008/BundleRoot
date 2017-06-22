@@ -8,16 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
-#define BREFI       @"BREFI"
-#define BROS        @"BROS"
-#define BRBaseband  @"BRBaseband"
-#define BRGrapeRoot @"BRGrapeRoot"
-#define BRMesa      @"BRMesa"
-#define BRWifi      @"BRWifi"
-#define BRPWifi     @"BRPWifi"
-#define BRBT        @"BRBT"
-#define BRbblib     @"BRbblib"
-#define BRWipaMini  @"BRWipaMini"
+#define BREFI       @"EFI"
+#define BROS        @"OS"
+#define BRBaseband  @"Baseband"
+#define BRGrapeRoot @"GrapeRoot"
+#define BRMesa      @"Mesa"
+
+#define BRPWifi     @"P_Wifi"
+
+#define BRWifi_BT   @"Wifi_BT"
+#define BRbblib     @"bblib"
+#define BRWipaMini  @"WipaMini"
 
 #define varString(var) [NSString stringWithFormat:@"%s",#var]
 
@@ -25,11 +26,14 @@
 
 @property (strong) NSString *bundleName;
 @property (strong) NSString *bundleType;
+@property (strong) NSString *bundleParentPath;
 @property (strong) NSString *bundleRelatedPath;
 @property (strong) NSString *bundleFullPath;
+@property (strong) NSString *bundleExtractPath;
 @property (strong) NSMutableArray *bundleSets;
 @property (assign) BOOL isSelected;
+@property (assign) BOOL isArchived;
 
-- (id)initWithTypeName:(NSString *)name;
+- (id)initWithType:(NSString *)name;
 
 @end

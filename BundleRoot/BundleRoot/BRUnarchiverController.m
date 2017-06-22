@@ -23,15 +23,25 @@
 
 @implementation BRUnarchiverController
 
-- (id)initWithFilename:(NSString *)filename
+- (instancetype)init
 {
-    if ((self = [super init])) {
-        _archiveName = filename;
+    self = [super init];
+    if (self) {
         finishTarget = nil;
         finishSelector = NULL;
     }
     return self;
 }
+
+- (id)initWithEntity:(BundleEntity *)entity
+{
+    self = [self init];
+    if (self) {
+        _bEntity = entity;
+    }
+    return self;
+}
+
 
 - (void)runWithFinishAction:(SEL)selector target:(id)target
 {
@@ -49,8 +59,8 @@
 - (void)extract
 {
     NSString *destinationPath;
-    NSString *path = _archiveName;
-    destinationPath = [path stringByDeletingLastPathComponent];
+    NSString *path = _bEntity.bundleFullPath;
+    destinationPath = _bEntity.bundleParentPath;
     
     if([XADPlatform fileExistsAtPath:path])
     {
@@ -72,8 +82,9 @@
         [unarchiver setDelegate:self];
 //        [unarchiver setRemovesEnclosingDirectoryForSoloItems:YES];
         XADError parseerror=[unarchiver parse];
-        XADError unarchiveerror = [unarchiver unarchive];
 
+        XADError unarchiveerror = [unarchiver unarchive];
+        _bEntity.bundleExtractPath = [unarchiver createdItem];
         if(parseerror) { }
         if(unarchiveerror) { }
     }
@@ -94,7 +105,7 @@
 
 -(void)simpleUnarchiver:(XADSimpleUnarchiver *)unarchiver willExtractEntryWithDictionary:(NSDictionary *)dict to:(NSString *)path
 {
-    XADPath *name=[dict objectForKey:XADFileNameKey];
+//    XADPath *name=[dict objectForKey:XADFileNameKey];
     
 }
 
@@ -124,21 +135,23 @@
            fileProgress:(off_t)fileprogress of:(off_t)filesize
           totalProgress:(off_t)totalprogress of:(off_t)totalsize
 {
-    NSUInteger progressInt = 100*totalprogress/totalsize;
+    double progress = 100*totalprogress/totalsize;
     
 //    dispatch_sync(dispatch_get_main_queue(), ^{
 //        [_sheetViewController updateProgress:progressInt];
 //        [_sheetViewController.percentTextField setStringValue:[NSString stringWithFormat:@"%lu%%", progressInt]];
 //    });
     
-    NSLog(@"TopName : %@, Total Progress: %lu%%",
-          [[unarchiver destination] lastPathComponent], progressInt);
+//    NSLog(@"TopName : %@, Total Progress: %f%%", [[unarchiver destination] lastPathComponent], progress);
+    [_mainControllerDelegate updateProgress:progress target:_bEntity];
 }
 
 -(void)simpleUnarchiver:(XADSimpleUnarchiver *)unarchiver estimatedExtractionProgressForEntryWithDictionary:(NSDictionary *)dict
            fileProgress:(double)fileprogress totalProgress:(double)totalprogress
 {
-    NSLog(@"gz Total Progress: %f%%", 100*totalprogress);
+    double progress = 100*totalprogress;
+//    NSLog(@"gz Total Progress: %f%%", progress);
+    [_mainControllerDelegate updateProgress:progress target:_bEntity];
 }
 
 #pragma mark - XADSimpleUnarchiverDelegate

@@ -32,6 +32,7 @@
 		1D4E041F1EFA0C34000710C9 /* BundleEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D4E041E1EFA0C34000710C9 /* BundleEntity.m */; };
 		1D4E04221EFA4C63000710C9 /* BRCheckboxCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D4E04211EFA4C63000710C9 /* BRCheckboxCellView.m */; };
 		1D4E04251EFA4C94000710C9 /* BRPopUpCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D4E04241EFA4C94000710C9 /* BRPopUpCellView.m */; };
+		1D4E04271EFBBB46000710C9 /* OK.wav in Resources */ = {isa = PBXBuildFile; fileRef = 1D4E04261EFBBB46000710C9 /* OK.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -227,6 +228,7 @@
 		1D4E04211EFA4C63000710C9 /* BRCheckboxCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BRCheckboxCellView.m; sourceTree = "<group>"; };
 		1D4E04231EFA4C94000710C9 /* BRPopUpCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BRPopUpCellView.h; sourceTree = "<group>"; };
 		1D4E04241EFA4C94000710C9 /* BRPopUpCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BRPopUpCellView.m; sourceTree = "<group>"; };
+		1D4E04261EFBBB46000710C9 /* OK.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = OK.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -289,6 +291,7 @@
 		1D4E03281EF252C2000710C9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				1D4E04261EFBBB46000710C9 /* OK.wav */,
 				1D4E03291EF252C2000710C9 /* main.m */,
 				1D4E03331EF252C2000710C9 /* Info.plist */,
 			);
@@ -571,6 +574,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D4E04271EFBBB46000710C9 /* OK.wav in Resources */,
 				1D4E032F1EF252C2000710C9 /* Assets.xcassets in Resources */,
 				1D4E03321EF252C2000710C9 /* Main.storyboard in Resources */,
 				1D4E03781EF255B0000710C9 /* ProgressWindowController.xib in Resources */,

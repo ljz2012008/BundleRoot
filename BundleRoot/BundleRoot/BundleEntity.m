@@ -16,15 +16,18 @@
     if (self) {
         _bundleName = @"";
         _bundleType = @"";
+        _bundleParentPath = @"";
         _bundleRelatedPath = @"";
         _bundleFullPath = @"";
+        _bundleExtractPath = @"";
         _bundleSets = [NSMutableArray new];
         _isSelected = YES;
+        _isArchived = YES;
     }
     return self;
 }
 
-- (id)initWithTypeName:(NSString *)name
+- (id)initWithType:(NSString *)name
 {
     self = [self init];
     if (self) {

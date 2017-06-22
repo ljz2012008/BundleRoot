@@ -735,14 +735,14 @@
                                         </buttonCell>
                                     </button>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="60350034-FE7A-4886-94FC-70AD74C0D6E4" label="Check" paletteLabel="Check" image="NSSlideshowTemplate" id="lhr-jA-Uqw" customClass="ToolbarItem">
+                                <toolbarItem implicitItemIdentifier="60350034-FE7A-4886-94FC-70AD74C0D6E4" label="Unarch" paletteLabel="Unarch" image="Unarchive" id="lhr-jA-Uqw" customClass="ToolbarItem">
                                     <nil key="toolTip"/>
                                     <size key="minSize" width="24" height="25"/>
                                     <size key="maxSize" width="47" height="25"/>
                                     <button key="view" verticalHuggingPriority="750" id="F2N-dc-oqf">
-                                        <rect key="frame" x="4" y="14" width="33" height="25"/>
+                                        <rect key="frame" x="6" y="14" width="33" height="25"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="roundTextured" alternateTitle="Merge" bezelStyle="texturedRounded" image="NSSlideshowTemplate" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wRw-2O-0yR">
+                                        <buttonCell key="cell" type="roundTextured" alternateTitle="Merge" bezelStyle="texturedRounded" image="Unarchive" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wRw-2O-0yR">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
@@ -751,11 +751,28 @@
                                         </connections>
                                     </button>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="231D0C09-C0DC-4B3D-BC68-6C49C7860851" label="Check" paletteLabel="Check" image="Check" autovalidates="NO" selectable="YES" id="yZ9-Ii-Kdg" customClass="ToolbarItem">
+                                    <nil key="toolTip"/>
+                                    <size key="minSize" width="24" height="25"/>
+                                    <size key="maxSize" width="47" height="25"/>
+                                    <button key="view" verticalHuggingPriority="750" id="H78-6s-F6C">
+                                        <rect key="frame" x="4" y="14" width="33" height="25"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="roundTextured" alternateTitle="Merge" bezelStyle="texturedRounded" image="Check" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="c88-dK-12t">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="checkBundle:" target="B8D-0N-5wS" id="AD7-Hz-Sve"/>
+                                        </connections>
+                                    </button>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="7cz-iD-k6O"/>
                                 <toolbarItem reference="nSj-tT-Ue1"/>
                                 <toolbarItem reference="lhr-jA-Uqw"/>
+                                <toolbarItem reference="yZ9-Ii-Kdg"/>
                                 <toolbarItem reference="7JX-jE-Xih"/>
                                 <toolbarItem reference="nSj-tT-Ue1"/>
                                 <toolbarItem reference="iX9-1f-a1G"/>
@@ -1024,10 +1041,11 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Check" width="83" height="62"/>
         <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSAddTemplate" width="11" height="11"/>
         <image name="NSRefreshTemplate" width="11" height="15"/>
-        <image name="NSSlideshowTemplate" width="17" height="14"/>
         <image name="SaveTemplate" width="18" height="18"/>
+        <image name="Unarchive" width="75" height="81"/>
     </resources>
 </document>

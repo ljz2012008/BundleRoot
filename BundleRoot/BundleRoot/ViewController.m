@@ -52,26 +52,64 @@
     _logTxT = [NSMutableString new];
     _panel = [NSOpenPanel openPanel];
     [self.mainFolderBrower setCellClass:[FileSystemBrowserCell class]];
-    
-    _bundleDic = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                  @"1", BREFI,
-                  @"1", BROS,
-                  @"1", BRBaseband,
-                  @"1", BRGrapeRoot,
-                  @"1", BRMesa,
-                  @"1", BRWifi,
-                  @"1", BRPWifi,
-                  @"1", BRBT,
-                  @"1", BRbblib,
-                  @"1", BRWipaMini, nil];
+
     _bundleArr = [NSMutableArray new];
-    NSArray *tempArr = @[BREFI, BROS, BRBaseband, BRGrapeRoot, BRMesa, BRWifi, BRPWifi, BRBT, BRbblib, BRWipaMini];
+    NSArray *tempArr = @[BREFI, BROS, BRBaseband, BRGrapeRoot, BRMesa, BRPWifi, BRWifi_BT, BRbblib, BRWipaMini];
     for (NSString *keyStr in tempArr) {
-        BundleEntity *tempEntity = [[BundleEntity alloc] initWithTypeName:keyStr];
+        BundleEntity *tempEntity = [[BundleEntity alloc] initWithType:keyStr];
+        if ([keyStr isEqualToString:BREFI]) {
+            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
+            // 1. Copy to relative J71s_J72s_ROOT
+            // 2. find Tianshan format
+            // 3. check CurrentBundle CurrentRoot ErieTianshan14E61060k_J71s_J72s J71s_J72s_ROOT
+            // 4. delete /Users/gdlocal/RestorePackage/ErieTianshan14E61060k_J71s_J72s/Restore/Diags/XXX | add 2 bin
+            // 5. new CurrentDiags | add 2bin
+        }
+        if ([keyStr isEqualToString:BROS]) {
+            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
+            // overwrite
+            // check when duplication of name
+        }
+        if ([keyStr isEqualToString:BRBaseband]) {
+            tempEntity.isArchived = NO;
+            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/CurrentBaseband";
+            // copy to relative path
+            // link symbol file : CurrentBaseband.zip
+        }
+        if ([keyStr isEqualToString:BRGrapeRoot]) {
+            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
+            // overwrite
+            // list????
+        }
+        if ([keyStr isEqualToString:BRMesa]) {
+            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
+            // overwrite
+            // list????
+        }
+        if ([keyStr isEqualToString:BRPWifi]) {
+            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
+            // overwrite
+            // list????
+        }
+        if ([keyStr isEqualToString:BRWifi_BT]) {
+            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
+            // overwrite
+            // list????
+        }
+        if ([keyStr isEqualToString:BRbblib]) {
+            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
+            // delete /Users/gdlocal/RestorePackage/J71s_J72s_ROOT/AppleInternal/Diags/Logs/Smokey/Shared/BBLib/Latest
+            // copy bundle | overwrite
+        }
+        if ([keyStr isEqualToString:BRWipaMini]) {
+            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
+            // check the name of WiPASmini
+            // copy to /Users/gdlocal/RestorePackage/J71s_J72s_ROOT/AppleInternal/Applications/SwitchBoard
+        }
         [_bundleArr addObject:tempEntity];
     }
     
-    _logTxT = [NSMutableString stringWithFormat:@"Unarchive:\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n", varString(BREFI), varString(BROS),varString(BRBaseband),varString(BRGrapeRoot),varString(BRMesa),varString(BRWifi),varString(BRPWifi),varString(BRBT), varString(BRbblib), varString(BRWipaMini)];
+    _logTxT = [NSMutableString stringWithFormat:@"Unarchive:\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n", BREFI, BROS, BRBaseband, BRGrapeRoot, BRMesa, BRPWifi, BRbblib, BRWipaMini];
     [_logTextView setString:_logTxT];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -94,7 +132,25 @@
 }
 
 #pragma mark - BRUnarchiverToMainControllerDelegate
-
+- (void)updateProgress:(double)dProgress target:(id)targetObj
+{
+    for (BundleEntity *entity in _bundleArr) {
+        if (entity == targetObj) {
+            NSString *progress = [NSString stringWithFormat:@"%d%%", (int)dProgress];
+            NSString *pattern = [NSString stringWithFormat:@"(?<=%@: ).*?%%", entity.bundleType];
+            NSRegularExpression *reExpress = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
+            NSTextCheckingResult *firstMatch = [reExpress firstMatchInString:_logTxT options:0 range:NSMakeRange(0, [_logTxT length])];
+            if (firstMatch) {
+                NSRange resultRange = [firstMatch rangeAtIndex:0];
+                //从urlString中截取数据
+                [_logTxT replaceCharactersInRange:resultRange withString:progress];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [_logTextView setString:_logTxT];
+                });
+            }
+        }
+    }
+}
 
 #pragma mark - NSBrowserDelegate
 - (id)rootItemForBrowser:(NSBrowser *)browser
@@ -232,7 +288,7 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
             NSInteger rowIndex = [_bTableView rowForView:_keepObj];
             if (rowIndex < 0) return;
             BundleEntity *cellEntity = _bundleArr[rowIndex];
-            cellEntity.bundleRelatedPath = path;
+            cellEntity.bundleParentPath = path;
             [cellEntity.bundleSets removeAllObjects];
             
             BRPopUpCellView *cellView = [_bTableView viewAtColumn:1 row:rowIndex makeIfNecessary:NO];
@@ -264,7 +320,7 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
 
 - (void)unarchiverControllerFinish:(BRUnarchiverController *)archiveController
 {
-    NSLog(@"%@ : Finish", archiveController.archiveName);
+    NSLog(@"%@ : Finish", archiveController.bEntity.bundleName);
 }
 
 #pragma mark - NSNotification
@@ -291,23 +347,29 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
 
 - (void)__checkBundle
 {
+    _logTxT = [NSMutableString stringWithFormat:@"Unarchive:\n"];
     for (int i = 0; i < [_bundleArr count]; i++) {
         BRPopUpCellView *cellView = [_bTableView viewAtColumn:1 row:i makeIfNecessary:NO];
         BundleEntity *cellEntity = _bundleArr[i];
         
-        if (cellEntity.isSelected && [cellView.popUpBtn indexOfSelectedItem] > 1) {
+        if (cellEntity.isSelected && [cellView.popUpBtn indexOfSelectedItem] > 1 && cellEntity.isArchived == YES) {
+            [_logTxT appendString:[NSString stringWithFormat:@"%@: 0%%\n", cellEntity.bundleType]];
             cellEntity.bundleName = [cellView.popUpBtn titleOfSelectedItem];
-            cellEntity.bundleFullPath = [cellEntity.bundleRelatedPath stringByAppendingFormat:@"/%@", cellEntity.bundleName];
+            cellEntity.bundleFullPath = [cellEntity.bundleParentPath stringByAppendingFormat:@"/%@", cellEntity.bundleName];
             [self exeUnarchiveWithBundleEntity:cellEntity];
+        }
+        if (cellEntity.isArchived == NO) {
+            cellEntity.bundleName = [cellView.popUpBtn titleOfSelectedItem];
+            cellEntity.bundleFullPath = [cellEntity.bundleParentPath stringByAppendingFormat:@"/%@", cellEntity.bundleName];
+            cellEntity.bundleExtractPath = cellEntity.bundleFullPath;
         }
     }
 }
 
 - (void)exeUnarchiveWithBundleEntity:(BundleEntity *)entity
 {
-    BRUnarchiverController *unarchiver = [[BRUnarchiverController alloc] initWithFilename:entity.bundleFullPath];
-    unarchiver.archiveType = entity.bundleType;
-    unarchiver.destinationPath = entity.bundleRelatedPath;
+    BRUnarchiverController *unarchiver = [[BRUnarchiverController alloc] initWithEntity:entity];
+    unarchiver.mainControllerDelegate = self;
     [unarchiver runWithFinishAction:@selector(unarchiverControllerFinish:) target:self];
 }
 

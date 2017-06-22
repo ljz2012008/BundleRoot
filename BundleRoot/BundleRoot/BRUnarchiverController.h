@@ -7,23 +7,20 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BundleEntity.h"
 
 @protocol BRUnarchiverToMainControllerDelegate <NSObject>
 
-- (void)updateProgressWith:(double)dProgress target:(id)targetObj;
+- (void)updateProgress:(double)dProgress target:(id)Obj;
 
 @end
 
 @interface BRUnarchiverController : NSObject
 
-@property (strong) NSString *archiveType;
-@property (strong) NSString *archiveName;
-@property (strong) NSString *destinationPath;
-
+@property (weak) BundleEntity *bEntity;
 @property (weak) id mainControllerDelegate;
 
-
-- (id)initWithFilename:(NSString *)filename;
+- (id)initWithEntity:(BundleEntity *)entity;
 - (void)runWithFinishAction:(SEL)selector target:(id)target;
 - (void)executeExtractThread;
 - (void)extract;
