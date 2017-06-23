@@ -1040,11 +1040,11 @@ fileFraction:(double)fileratio estimatedTotalFraction:(double)totalratio
     while([XADPlatform fileExistsAtPath:dest] || (reserved&&[reserved containsObject:dest])){
         // Taylor mark
 //        if ([XADPlatform fileExistsAtPath:path isDirectory:NO]) {
-//            dest=[NSString stringWithFormat:@"%@-%d",path,n++];
+            dest=[NSString stringWithFormat:@"%@-%d",path,n++];
 //        } else {
 //            dest=[NSString stringWithFormat:@"%@-%d%@",base,n++,extension];
 //        }
-        [XADPlatform removeItemAtPath:dest];
+//        [XADPlatform removeItemAtPath:dest];
     }
 	return dest;
 }

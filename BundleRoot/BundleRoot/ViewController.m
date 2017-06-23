@@ -19,6 +19,9 @@
 #import "ZipKit/ZKFileArchive.h"
 #import "ZipKit/ZKLog.h"
 
+#import <XADMaster/XADSimpleUnarchiver.h>
+#import <XADMaster/XADPlatform.h>
+
 #import "BRUnarchiverController.h"
 
 @interface ViewController () <NSBrowserDelegate, BRUnarchiverToMainControllerDelegate, NSTableViewDelegate, NSTableViewDataSource>
@@ -34,7 +37,9 @@
 
 @property (strong) FileSystemNode *rootNode;
 @property (strong) NSMutableArray *bundleArr;
-
+@property (strong) NSString *versionPath;
+@property (strong) NSString *rootPath;
+@property (strong) NSString *restorePackagePath;
 @end
 
 @implementation ViewController
@@ -51,55 +56,14 @@
     NSArray *tempArr = @[BREFI, BROS, BRBaseband, BRGrapeRoot, BRMesa, BRPWifi, BRWifi_BT, BRbblib, BRWipaMini];
     for (NSString *keyStr in tempArr) {
         BundleEntity *tempEntity = [[BundleEntity alloc] initWithType:keyStr];
-        if ([keyStr isEqualToString:BREFI]) {
-            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
-            // 1. Copy to relative J71s_J72s_ROOT
-            // 2. find Tianshan format
-            // 3. check CurrentBundle CurrentRoot ErieTianshan14E61060k_J71s_J72s J71s_J72s_ROOT
-            // 4. delete /Users/gdlocal/RestorePackage/ErieTianshan14E61060k_J71s_J72s/Restore/Diags/XXX | add 2 bin
-            // 5. new CurrentDiags | add 2bin
-        }
-        if ([keyStr isEqualToString:BROS]) {
-            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
-            // overwrite
-            // check when duplication of name
-        }
+        
         if ([keyStr isEqualToString:BRBaseband]) {
             tempEntity.isArchived = NO;
             tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/CurrentBaseband";
             // copy to relative path
             // link symbol file : CurrentBaseband.zip
         }
-        if ([keyStr isEqualToString:BRGrapeRoot]) {
-            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
-            // overwrite
-            // list????
-        }
-        if ([keyStr isEqualToString:BRMesa]) {
-            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
-            // overwrite
-            // list????
-        }
-        if ([keyStr isEqualToString:BRPWifi]) {
-            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
-            // overwrite
-            // list????
-        }
-        if ([keyStr isEqualToString:BRWifi_BT]) {
-            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
-            // overwrite
-            // list????
-        }
-        if ([keyStr isEqualToString:BRbblib]) {
-            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
-            // delete /Users/gdlocal/RestorePackage/J71s_J72s_ROOT/AppleInternal/Diags/Logs/Smokey/Shared/BBLib/Latest
-            // copy bundle | overwrite
-        }
-        if ([keyStr isEqualToString:BRWipaMini]) {
-            tempEntity.bundleRelatedPath = @"/Users/gdlocal/RestorePackage/J71s_J72s_ROOT";
-            // check the name of WiPASmini
-            // copy to /Users/gdlocal/RestorePackage/J71s_J72s_ROOT/AppleInternal/Applications/SwitchBoard
-        }
+        
         [_bundleArr addObject:tempEntity];
     }
     
@@ -339,6 +303,31 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
     [_overlayNameTextField setStringValue:fileName];
     _rootNode = [[FileSystemNode alloc] initWithURL:[NSURL fileURLWithPath:path]];
     [_mainFolderBrower loadColumnZero];
+    _restorePackagePath = [path stringByAppendingString:@"/Users/gdlocal/RestorePackage"];
+    NSArray *contentsPath = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:_restorePackagePath error:nil];
+    NSLog(@"contentsOfDirectory: %@", contentsPath);
+    for (NSString *element in contentsPath) {
+        if ([element containsString:@"DS_Store"]) {
+            continue;
+        }
+        if ([self canMatchPattern:@"([a-zA-Z0-9]+_)++(?!ROOT)" inString:element]) {
+            _versionPath = [_restorePackagePath stringByAppendingFormat:@"/%@", element];
+        }
+        if ([self canMatchPattern:@"([a-zA-Z0-9]+_)++(?=ROOT)" inString:element]) {
+            _rootPath = [_restorePackagePath stringByAppendingFormat:@"/%@", element];
+        }
+        NSLog(@"    %@", element);
+    }
+}
+
+- (BOOL)canMatchPattern:(NSString *)pattern inString:(NSString *)logStr
+{
+    NSRegularExpression *reExpress = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:nil];
+    NSTextCheckingResult *firstMatch = [reExpress firstMatchInString:logStr options:0 range:NSMakeRange(0, [logStr length])];
+    if (firstMatch) {
+        return true;
+    }
+    return false;
 }
 
 - (void)__unarchiveBundle:(NSNotification*)notification
@@ -360,6 +349,8 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
                 cellEntity.bundleFullPath = [cellEntity.bundleParentPath stringByAppendingFormat:@"/%@", cellEntity.bundleName];
                 [self exeUnarchiveWithBundleEntity:cellEntity];
             }
+        } else {
+            cellEntity.isValid = NO;
         }
         
     }
@@ -376,15 +367,117 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
 - (void)__archiveCheck:(NSNotification*)notification
 {
     NSString *overlayPath = [_rootNode.URL path];
+    NSString *binPath = [_rootPath stringByAppendingFormat:@"/AppleInternal/Diags/bin"];
+    NSString *diagsPath = [_versionPath stringByAppendingString:@"/Restore/Diags"];
+    NSString *currentDiagsPath = [_restorePackagePath stringByAppendingString:@"/CurrentDiags"];
+    NSString *currentBasebandPath = [_restorePackagePath stringByAppendingString:@"/CurrentBaseband"];
     
     for (BundleEntity *entity in _bundleArr) {
         if (entity.isValid) {
-            NSString *reAb = [overlayPath stringByAppendingFormat:@"%@", entity.bundleRelatedPath];
-            [self overwritefileWithTargetPath:reAb sourePath:entity.bundleExtractPath];
+            
+            if ([entity.bundleType isEqualToString:BREFI]) {
+                // 1. Copy to relative J71s_J72s_ROOT
+                [self mergeContentsOfPath:entity.bundleExtractPath intoPath:_rootPath error:nil];
+//                [self overwritefileWithTargetPath:_rootPath sourePath:entity.bundleExtractPath];
+                // 2. find Tianshan format
+                // 3. check CurrentBundle CurrentRoot ErieTianshan14E61060k_J71s_J72s J71s_J72s_ROOT
+                // 4. delete /Users/gdlocal/RestorePackage/ErieTianshan14E61060k_J71s_J72s/Restore/Diags/XXX | add 2 bin
+                [XADPlatform removeItemAtPath:diagsPath];
+                [self copyDirectoryFromPath:binPath toPath:diagsPath];
+                // 5. new CurrentDiags | add 2bin
+                [XADPlatform removeItemAtPath:currentDiagsPath];
+                [self copyDirectoryFromPath:binPath toPath:currentDiagsPath];
+                [XADPlatform removeItemAtPath:entity.bundleExtractPath];
+            }
+            if ([entity.bundleType isEqualToString:BROS]) {
+                // overwrite
+                // check when duplication of name
+                [self mergeContentsOfPath:entity.bundleExtractPath intoPath:_rootPath error:nil];
+                [XADPlatform removeItemAtPath:entity.bundleExtractPath];
+            }
+            if ([entity.bundleType isEqualToString:BRBaseband]) {
+                // copy to relative path
+                [XADPlatform removeItemAtPath:currentBasebandPath];
+                NSString *targetPath = [currentBasebandPath stringByAppendingPathComponent:[entity.bundleExtractPath lastPathComponent]];
+                [[NSFileManager defaultManager] createDirectoryAtPath:currentBasebandPath withIntermediateDirectories:YES attributes:nil error:nil];
+                [[NSFileManager defaultManager] copyItemAtPath:entity.bundleExtractPath toPath:targetPath error:nil];
+                // link symbol file : CurrentBaseband.zip
+                NSString *sBaseband = [entity.bundleExtractPath lastPathComponent];
+                [[NSFileManager defaultManager] changeCurrentDirectoryPath:currentBasebandPath];
+                [[NSFileManager defaultManager] createSymbolicLinkAtPath:@"CurrentBaseband.zip" withDestinationPath:sBaseband error:nil];
+            }
+            if ([entity.bundleType isEqualToString:BRGrapeRoot]) {
+                // overwrite
+                // list????
+                [self mergeContentsOfPath:entity.bundleExtractPath intoPath:_rootPath error:nil];
+                [XADPlatform removeItemAtPath:entity.bundleExtractPath];
+            }
+            if ([entity.bundleType isEqualToString:BRMesa]) {
+                // overwrite
+                // list????
+                [self mergeContentsOfPath:entity.bundleExtractPath intoPath:_rootPath error:nil];
+                [XADPlatform removeItemAtPath:entity.bundleExtractPath];
+            }
+            if ([entity.bundleType isEqualToString:BRPWifi]) {
+                // overwrite
+                // list????
+                [self mergeContentsOfPath:entity.bundleExtractPath intoPath:_rootPath error:nil];
+                [XADPlatform removeItemAtPath:entity.bundleExtractPath];
+            }
+            if ([entity.bundleType isEqualToString:BRWifi_BT]) {
+                // overwrite
+                // list????
+                [self mergeContentsOfPath:entity.bundleExtractPath intoPath:[_rootPath stringByAppendingString:@"/AppleInternal"] error:nil];
+                [XADPlatform removeItemAtPath:entity.bundleExtractPath];
+            }
+            if ([entity.bundleType isEqualToString:BRbblib]) {
+                // delete /Users/gdlocal/RestorePackage/J71s_J72s_ROOT/AppleInternal/Diags/Logs/Smokey/Shared/BBLib/Latest
+                [XADPlatform removeItemAtPath:[_rootPath stringByAppendingString:@"/AppleInternal/Diags/Logs/Smokey/Shared/BBLib/Latest"]];
+                // copy bundle | overwrite
+                [self mergeContentsOfPath:entity.bundleExtractPath intoPath:_rootPath error:nil];
+                [XADPlatform removeItemAtPath:entity.bundleExtractPath];
+            }
+            if ([entity.bundleType isEqualToString:BRWipaMini]) {
+                // check the name of WiPASmini
+                // copy to /Users/gdlocal/RestorePackage/J71s_J72s_ROOT/AppleInternal/Applications/SwitchBoard
+                NSString *switchPath = [_rootPath stringByAppendingString:@"/AppleInternal/Applications/SwitchBoard"];
+                if (![XADPlatform fileExistsAtPath:switchPath]) {
+                    [[NSFileManager defaultManager] createDirectoryAtPath:switchPath withIntermediateDirectories:YES attributes:nil error:nil];
+                }
+                [XADPlatform removeItemAtPath:[switchPath stringByAppendingString:@"/WiPASmini.app"]];
+                [XADPlatform moveItemAtPath:entity.bundleExtractPath toPath:[switchPath stringByAppendingString:@"/WiPASmini.app"]];
+            }
         }
     }
+    
+    [_logTxT appendString:@"/n/n Check OK"];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_logTextView setString:_logTxT];
+    });
 
     [[notification object] setEnabled:YES];
+}
+
+- (void)copyDirectoryFromPath:(NSString *)sPath toPath:(NSString *)tPath
+{
+    NSString *sourcePath = sPath;
+    NSString *destPath = tPath;
+    NSFileManager *fm = [NSFileManager defaultManager];
+    
+    [fm createDirectoryAtPath:destPath withIntermediateDirectories:YES attributes:nil error:NULL];
+    
+    NSArray *sourceFiles = [fm contentsOfDirectoryAtPath:sourcePath error:NULL];
+    NSError *copyError = nil;
+    
+    BOOL isDirectory;
+    
+    for (NSString *currentFile in sourceFiles)
+    {
+        if (![fm copyItemAtPath:[sourcePath stringByAppendingPathComponent:currentFile] toPath:[destPath stringByAppendingPathComponent:currentFile] error:&copyError])
+        {
+            NSLog(@".....%@", currentFile);
+        }
+    }
 }
 
 - (BOOL)overwritefileWithTargetPath:(NSString *)tPath sourePath:(NSString *)sPath
@@ -402,6 +495,51 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
         NSLog(@"Unable to move file: %@", [error localizedDescription]);
     }
     return isPass;
+}
+
+- (void)mergeContentsOfPath:(NSString *)srcDir intoPath:(NSString *)dstDir error:(NSError**)err {
+    
+    NSLog(@"- mergeContentsOfPath: %@\n intoPath: %@", srcDir, dstDir);
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSDirectoryEnumerator *srcDirEnum = [fm enumeratorAtPath:srcDir];
+    NSString *subPath;
+    while ((subPath = [srcDirEnum nextObject])) {
+        
+        NSLog(@" subPath: %@", subPath);
+        NSString *srcFullPath =  [srcDir stringByAppendingPathComponent:subPath];
+        NSString *potentialDstPath = [dstDir stringByAppendingPathComponent:subPath];
+        
+        // Need to also check if file exists because if it doesn't, value of `isDirectory` is undefined.
+        BOOL isDirectory = ([[NSFileManager defaultManager] fileExistsAtPath:srcFullPath isDirectory:&isDirectory] && isDirectory);
+        
+        // Create directory, or delete existing file and move file to destination
+        if (isDirectory) {
+            NSLog(@"   create directory");
+            [fm createDirectoryAtPath:potentialDstPath withIntermediateDirectories:YES attributes:nil error:err];
+            if (err && *err) {
+                NSLog(@"ERROR: %@", *err);
+                return;
+            }
+        }
+        else {
+            if ([fm fileExistsAtPath:potentialDstPath]) {
+                NSLog(@"   removeItemAtPath");
+                [fm removeItemAtPath:potentialDstPath error:err];
+                if (err && *err) {
+                    NSLog(@"ERROR: %@", *err);
+                    return;
+                }
+            }
+            
+            NSLog(@"   moveItemAtPath");
+            [fm moveItemAtPath:srcFullPath toPath:potentialDstPath error:err];
+            if (err && *err) {
+                NSLog(@"ERROR: %@", *err);
+                return;
+            }
+        }
+    }
 }
 
 @end

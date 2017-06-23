@@ -734,6 +734,7 @@
 				);
 				INFOPLIST_FILE = BundleRoot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.itsme.BundleRoot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -750,6 +751,7 @@
 				);
 				INFOPLIST_FILE = BundleRoot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.itsme.BundleRoot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
