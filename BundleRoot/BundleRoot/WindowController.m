@@ -48,9 +48,16 @@
     }];
 }
 
-- (IBAction)checkBundle:(id)sender
+- (IBAction)unarchiveBundle:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:BRCheckBundleNotification object:nil];
+//    [sender setEnabled:NO];
+    [[NSNotificationCenter defaultCenter] postNotificationName:BRUnarchiveBundleNotification object:sender];
+}
+
+- (IBAction)archiveCheck:(id)sender
+{
+//    [sender setEnabled:NO];
+    [[NSNotificationCenter defaultCenter] postNotificationName:BRArchiveCheckNotification object:sender];
 }
 
 - (IBAction)generateOverlay:(id)sender

@@ -9,7 +9,8 @@
 #ifndef BRNotification_h
 #define BRNotification_h
 
-#define BRNewOverlayNotification @"BRNewOverlayNotification"
-#define BRCheckBundleNotification @"BRCheckBundleNotification"
+#define BRNewOverlayNotification        @"BRNewOverlayNotification"
+#define BRUnarchiveBundleNotification   @"BRUnarchiveBundleNotification"
+#define BRArchiveCheckNotification      @"BRArchiveCheckNotification"
 
 #endif /* BRNotification_h */

@@ -21,24 +21,18 @@
 
 #import "BRUnarchiverController.h"
 
-
-
 @interface ViewController () <NSBrowserDelegate, BRUnarchiverToMainControllerDelegate, NSTableViewDelegate, NSTableViewDataSource>
 
+@property (strong) NSOpenPanel *panel;
 @property (weak) IBOutlet NSTextField *overlayNameTextField;
 @property (weak) IBOutlet NSBrowser *mainFolderBrower;
+@property (weak) IBOutlet NSTableView *bTableView;
 @property (unsafe_unretained) IBOutlet NSTextView *logTextView;
 @property (strong) NSMutableString *logTxT;
-
-@property (weak) IBOutlet NSTableView *bTableView;
 
 @property (weak) id keepObj;
 
 @property (strong) FileSystemNode *rootNode;
-
-@property (strong) NSOpenPanel *panel;
-
-@property (strong) NSMutableDictionary *bundleDic;
 @property (strong) NSMutableArray *bundleArr;
 
 @end
@@ -116,15 +110,17 @@
                                              selector:@selector(__reloadBrowerWithFilePath:)
                                                  name:BRNewOverlayNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(__checkBundle)
-                                                 name:BRCheckBundleNotification object:nil];
+                                             selector:@selector(__unarchiveBundle:)
+                                                 name:BRUnarchiveBundleNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(__archiveCheck:)
+                                                 name:BRArchiveCheckNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(popUpBtnAction:)
                                                  name:NSPopUpButtonWillPopUpNotification object:nil];
     
 //    [ZKFileArchive process:@"/Users/foolery/Desktop/int" usingResourceFork:YES withInvoker:nil andDelegate:self];
 }
-
 
 - (void)setRepresentedObject:(id)representedObject {
     [super setRepresentedObject:representedObject];
@@ -345,25 +341,29 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
     [_mainFolderBrower loadColumnZero];
 }
 
-- (void)__checkBundle
+- (void)__unarchiveBundle:(NSNotification*)notification
 {
     _logTxT = [NSMutableString stringWithFormat:@"Unarchive:\n"];
     for (int i = 0; i < [_bundleArr count]; i++) {
         BRPopUpCellView *cellView = [_bTableView viewAtColumn:1 row:i makeIfNecessary:NO];
         BundleEntity *cellEntity = _bundleArr[i];
         
-        if (cellEntity.isSelected && [cellView.popUpBtn indexOfSelectedItem] > 1 && cellEntity.isArchived == YES) {
-            [_logTxT appendString:[NSString stringWithFormat:@"%@: 0%%\n", cellEntity.bundleType]];
-            cellEntity.bundleName = [cellView.popUpBtn titleOfSelectedItem];
-            cellEntity.bundleFullPath = [cellEntity.bundleParentPath stringByAppendingFormat:@"/%@", cellEntity.bundleName];
-            [self exeUnarchiveWithBundleEntity:cellEntity];
+        if (cellEntity.isSelected && [cellView.popUpBtn indexOfSelectedItem] > 1) {
+            cellEntity.isValid = YES;
+            if (cellEntity.isArchived == NO) {
+                cellEntity.bundleName = [cellView.popUpBtn titleOfSelectedItem];
+                cellEntity.bundleFullPath = [cellEntity.bundleParentPath stringByAppendingFormat:@"/%@", cellEntity.bundleName];
+                cellEntity.bundleExtractPath = cellEntity.bundleFullPath;
+            } else {
+                [_logTxT appendString:[NSString stringWithFormat:@"%@: 0%%\n", cellEntity.bundleType]];
+                cellEntity.bundleName = [cellView.popUpBtn titleOfSelectedItem];
+                cellEntity.bundleFullPath = [cellEntity.bundleParentPath stringByAppendingFormat:@"/%@", cellEntity.bundleName];
+                [self exeUnarchiveWithBundleEntity:cellEntity];
+            }
         }
-        if (cellEntity.isArchived == NO) {
-            cellEntity.bundleName = [cellView.popUpBtn titleOfSelectedItem];
-            cellEntity.bundleFullPath = [cellEntity.bundleParentPath stringByAppendingFormat:@"/%@", cellEntity.bundleName];
-            cellEntity.bundleExtractPath = cellEntity.bundleFullPath;
-        }
+        
     }
+//    [[notification object] setEnabled:YES];
 }
 
 - (void)exeUnarchiveWithBundleEntity:(BundleEntity *)entity
@@ -373,10 +373,35 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
     [unarchiver runWithFinishAction:@selector(unarchiverControllerFinish:) target:self];
 }
 
-//- (NSString *)__bundleUnarchive:(NSString *)path relatedPath:(NSString *)relatedPath
-//{
-//
-//    
-//}
+- (void)__archiveCheck:(NSNotification*)notification
+{
+    NSString *overlayPath = [_rootNode.URL path];
+    
+    for (BundleEntity *entity in _bundleArr) {
+        if (entity.isValid) {
+            NSString *reAb = [overlayPath stringByAppendingFormat:@"%@", entity.bundleRelatedPath];
+            [self overwritefileWithTargetPath:reAb sourePath:entity.bundleExtractPath];
+        }
+    }
+
+    [[notification object] setEnabled:YES];
+}
+
+- (BOOL)overwritefileWithTargetPath:(NSString *)tPath sourePath:(NSString *)sPath
+{
+    NSFileManager *defaultManager = [NSFileManager defaultManager];
+    NSURL *sURL = [NSURL fileURLWithPath:sPath];
+    NSURL *tURL = [NSURL fileURLWithPath:tPath];
+    NSError *error;
+    BOOL isPass = [defaultManager replaceItemAtURL:tURL
+                                     withItemAtURL:sURL
+                                    backupItemName:nil
+                                           options:NSFileManagerItemReplacementUsingNewMetadataOnly
+                                  resultingItemURL:nil error:nil];
+    if (error) {
+        NSLog(@"Unable to move file: %@", [error localizedDescription]);
+    }
+    return isPass;
+}
 
 @end

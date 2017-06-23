@@ -32,6 +32,7 @@
 @property (strong) NSString *bundleExtractPath;
 @property (strong) NSMutableArray *bundleSets;
 @property (assign) BOOL isSelected;
+@property (assign) BOOL isValid;
 @property (assign) BOOL isArchived;
 
 - (id)initWithType:(NSString *)name;

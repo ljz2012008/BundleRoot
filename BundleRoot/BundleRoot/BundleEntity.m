@@ -22,6 +22,7 @@
         _bundleExtractPath = @"";
         _bundleSets = [NSMutableArray new];
         _isSelected = YES;
+        _isValid = NO;
         _isArchived = YES;
     }
     return self;

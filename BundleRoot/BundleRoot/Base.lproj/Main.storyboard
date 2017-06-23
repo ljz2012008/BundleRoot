@@ -746,24 +746,24 @@
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
-                                        <connections>
-                                            <action selector="checkBundle:" target="B8D-0N-5wS" id="LCI-8o-Axd"/>
-                                        </connections>
                                     </button>
+                                    <connections>
+                                        <action selector="unarchiveBundle:" target="B8D-0N-5wS" id="e5f-UT-4bi"/>
+                                    </connections>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="231D0C09-C0DC-4B3D-BC68-6C49C7860851" label="Check" paletteLabel="Check" image="Check" autovalidates="NO" selectable="YES" id="yZ9-Ii-Kdg" customClass="ToolbarItem">
+                                <toolbarItem implicitItemIdentifier="231D0C09-C0DC-4B3D-BC68-6C49C7860851" label="ArchCheck" paletteLabel="ArchCheck" image="Check" autovalidates="NO" selectable="YES" id="yZ9-Ii-Kdg" customClass="ToolbarItem">
                                     <nil key="toolTip"/>
                                     <size key="minSize" width="24" height="25"/>
                                     <size key="maxSize" width="47" height="25"/>
                                     <button key="view" verticalHuggingPriority="750" id="H78-6s-F6C">
-                                        <rect key="frame" x="4" y="14" width="33" height="25"/>
+                                        <rect key="frame" x="16" y="14" width="33" height="25"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="roundTextured" alternateTitle="Merge" bezelStyle="texturedRounded" image="Check" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="c88-dK-12t">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="checkBundle:" target="B8D-0N-5wS" id="AD7-Hz-Sve"/>
+                                            <action selector="archiveCheck:" target="B8D-0N-5wS" id="ob5-oW-mtb"/>
                                         </connections>
                                     </button>
                                 </toolbarItem>
@@ -974,7 +974,7 @@
                                                 </subviews>
                                             </clipView>
                                             <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="6na-P5-zBU">
-                                                <rect key="frame" x="1" y="119" width="238" height="15"/>
+                                                <rect key="frame" x="1" y="-15" width="0.0" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="shB-Fw-lAx">
@@ -1000,14 +1000,14 @@
                                             <rect key="frame" x="0.0" y="0.0" width="357" height="322"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" ambiguous="YES" id="mMu-9Q-oVh">
-                                                <rect key="frame" x="2" y="2" width="338" height="318"/>
+                                                <rect key="frame" x="2" y="2" width="353" height="318"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textView ambiguous="YES" editable="NO" importsGraphics="NO" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="tv4-vW-1LT">
-                                                        <rect key="frame" x="0.0" y="-1" width="338" height="318"/>
+                                                        <rect key="frame" x="0.0" y="-1" width="353" height="318"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="338" height="318"/>
+                                                        <size key="minSize" width="353" height="318"/>
                                                         <size key="maxSize" width="463" height="10000000"/>
                                                         <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     </textView>
@@ -1019,7 +1019,7 @@
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="pVf-zs-TrB">
-                                                <rect key="frame" x="340" y="2" width="15" height="318"/>
+                                                <rect key="frame" x="339" y="2" width="16" height="318"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                         </scrollView>
