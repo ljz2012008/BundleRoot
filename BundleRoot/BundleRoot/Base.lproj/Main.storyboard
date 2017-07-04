@@ -974,7 +974,7 @@
                                                 </subviews>
                                             </clipView>
                                             <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="6na-P5-zBU">
-                                                <rect key="frame" x="1" y="-15" width="0.0" height="16"/>
+                                                <rect key="frame" x="1" y="-15" width="0.0" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="shB-Fw-lAx">
@@ -1000,14 +1000,14 @@
                                             <rect key="frame" x="0.0" y="0.0" width="357" height="322"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" ambiguous="YES" id="mMu-9Q-oVh">
-                                                <rect key="frame" x="2" y="2" width="353" height="318"/>
+                                                <rect key="frame" x="2" y="2" width="338" height="318"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textView ambiguous="YES" editable="NO" importsGraphics="NO" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="tv4-vW-1LT">
-                                                        <rect key="frame" x="0.0" y="-1" width="353" height="318"/>
+                                                        <rect key="frame" x="0.0" y="-1" width="338" height="318"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="353" height="318"/>
+                                                        <size key="minSize" width="338" height="318"/>
                                                         <size key="maxSize" width="463" height="10000000"/>
                                                         <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     </textView>
@@ -1019,10 +1019,20 @@
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="pVf-zs-TrB">
-                                                <rect key="frame" x="339" y="2" width="16" height="318"/>
+                                                <rect key="frame" x="340" y="2" width="15" height="318"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                         </scrollView>
+                                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uZj-hd-KOD">
+                                            <rect key="frame" x="39" y="189" width="48" height="48"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="vui-e4-J4m"/>
+                                        </imageView>
+                                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fte-4W-BFh">
+                                            <rect key="frame" x="201" y="175" width="48" height="48"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="MyB-iK-OzA"/>
+                                        </imageView>
                                     </subviews>
                                 </view>
                             </box>
@@ -1030,6 +1040,8 @@
                     </view>
                     <connections>
                         <outlet property="bTableView" destination="kmH-9W-nan" id="nfs-lQ-u5c"/>
+                        <outlet property="image1" destination="uZj-hd-KOD" id="j08-8D-wAj"/>
+                        <outlet property="image2" destination="Fte-4W-BFh" id="V3p-JY-Un4"/>
                         <outlet property="logTextView" destination="tv4-vW-1LT" id="ddi-Rc-FqI"/>
                         <outlet property="mainFolderBrower" destination="W6g-ik-w7v" id="nEF-oI-cf7"/>
                         <outlet property="overlayNameTextField" destination="tlo-7i-xzz" id="m6M-At-IGa"/>

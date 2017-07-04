@@ -25,6 +25,8 @@
 #import "BRUnarchiverController.h"
 
 @interface ViewController () <NSBrowserDelegate, BRUnarchiverToMainControllerDelegate, NSTableViewDelegate, NSTableViewDataSource>
+@property (weak) IBOutlet NSImageView *image1;
+@property (weak) IBOutlet NSImageView *image2;
 
 @property (strong) NSOpenPanel *panel;
 @property (weak) IBOutlet NSTextField *overlayNameTextField;
@@ -67,6 +69,9 @@
         [_bundleArr addObject:tempEntity];
     }
     
+    
+    [[NSUserDefaults standardUserDefaults] setDouble:123 forKey:@"asdads"];
+    
     _logTxT = [NSMutableString stringWithFormat:@"Unarchive:\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n%@: 100%%\n", BREFI, BROS, BRBaseband, BRGrapeRoot, BRMesa, BRPWifi, BRbblib, BRWipaMini];
     [_logTextView setString:_logTxT];
     
@@ -84,6 +89,29 @@
                                                  name:NSPopUpButtonWillPopUpNotification object:nil];
     
 //    [ZKFileArchive process:@"/Users/foolery/Desktop/int" usingResourceFork:YES withInvoker:nil andDelegate:self];
+    
+//    NSString *path1 = @"/Users/foolery/Desktop/kk/z.Overlay/ErieTianshan14E61060k_DCSD-354_HWTE_SCM_P1_V07-1/Users/gdlocal/RestorePackage";
+//    NSString *path2 = @"/Users/foolery/Desktop/kk/z.Overlay/ErieTianshan14E61060k_DCSD-354_HWTE_SCM_P1_V07-1/Users/gdlocal/RestorePackage/CurrentBundle";
+//    NSString *path3 = @"/Users/foolery/Desktop/kk/z.Overlay/ErieTianshan14E61060k_DCSD-354_HWTE_SCM_P1_V07-1/Users/gdlocal/RestorePackage/ErieTianshan14E61060k_J71s_J72s";
+//    
+//    NSArray *arr = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path1 error:nil];
+//    NSArray *arr1 = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path2 error:nil];
+//    NSDictionary *attr = [[NSFileManager defaultManager] attributesOfFileSystemForPath:path2 error:nil];
+//    NSDictionary *attr1 = [[NSFileManager defaultManager] attributesOfFileSystemForPath:path3 error:nil];
+//
+//    NSImage *imageValue = [[NSWorkspace sharedWorkspace] iconForFile:path1];
+//    NSImage *imageValue1 = [[NSWorkspace sharedWorkspace] iconForFile:path2];
+//    
+//    NSImage* icon;
+//    if ([[NSURL fileURLWithPath:path3] getResourceValue:&icon forKey:NSURLLocalizedNameKey error:NULL]) {}
+//    
+//    NSString *fileType1 = [[NSWorkspace sharedWorkspace] typeOfFile:path1 error:nil];
+//    NSString *fileType2 = [[NSWorkspace sharedWorkspace] typeOfFile:path2 error:nil];
+//    NSString *fileType3 = [[NSWorkspace sharedWorkspace] typeOfFile:path3 error:nil];
+//    
+//    [_image1 setImage:imageValue];
+////    [_image2 setImage:imageValue1];
+//    _image2.image = [[NSWorkspace sharedWorkspace] iconForFile:path2];
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -211,9 +239,10 @@
 // http://developer.apple.com/documentation/Cocoa/Conceptual/Strings/Articles/SearchingStrings.html#//apple_ref/doc/uid/20000149-SW1
 NSInteger finderSortWithLocale(id string1, id string2, void *locale)
 {
-    static NSStringCompareOptions comparisonOptions =
-    NSCaseInsensitiveSearch | NSNumericSearch |
-    NSWidthInsensitiveSearch | NSForcedOrderingSearch;
+    static NSStringCompareOptions comparisonOptions = (NSCaseInsensitiveSearch |
+                                                       NSNumericSearch |
+                                                       NSWidthInsensitiveSearch |
+                                                       NSForcedOrderingSearch);
     
     NSRange string1Range = NSMakeRange(0, [string1 length]);
     
@@ -453,6 +482,7 @@ NSInteger finderSortWithLocale(id string1, id string2, void *locale)
     [_logTxT appendString:@"/n/n Check OK"];
     dispatch_async(dispatch_get_main_queue(), ^{
         [_logTextView setString:_logTxT];
+        [_mainFolderBrower loadColumnZero];
     });
 
     [[notification object] setEnabled:YES];

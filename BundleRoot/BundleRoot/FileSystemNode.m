@@ -134,7 +134,7 @@
 }
 
 - (NSArray *)children {
-    if (self.internalChildren == nil || self.childrenDirty) {
+//    if (self.internalChildren == nil || self.childrenDirty) {
         // This logic keeps the same pointers around, if possible.
         NSMutableArray *newChildren = [NSMutableArray array];
         
@@ -168,7 +168,7 @@
             NSComparisonResult result = [objName compare:obj2Name options:NSNumericSearch | NSCaseInsensitiveSearch | NSWidthInsensitiveSearch | NSForcedOrderingSearch range:NSMakeRange(0, objName.length) locale:[NSLocale currentLocale]];
             return result;
         }];
-    }
+//    }
     
     return self.internalChildren;
 }
