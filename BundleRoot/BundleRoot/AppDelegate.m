@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "FileSystemNode.h"
 
 @interface AppDelegate ()
 
@@ -16,6 +17,14 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
+    
+    FileSystemNode *node = [[FileSystemNode alloc] initWithURL:[NSURL URLWithString:@"/Users/foolery/Desktop/kk/z.Overlay/ErieTianshan14E61060k_DCSD-354_HWTE_SCM_P1_V07-1/Users/gdlocal/RestorePackage/CurrentBundle"]];
+    
+    
+    
+    NSArray *children = node.children;
+    BOOL bl = node.isDirectory;
+    
 }
 
 

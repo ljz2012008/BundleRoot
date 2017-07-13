@@ -60,7 +60,25 @@
 }
 
 - (NSImage *)icon {
-    return [[NSWorkspace sharedWorkspace] iconForFile:(self.URL).path];
+    NSImage* fileIcon = [[NSWorkspace sharedWorkspace] iconForFile:(self.URL).path];
+    NSImage* badgedFileIcon;
+    if (self.isAliasFile){
+        NSImage* aliasBadge = [[NSWorkspace sharedWorkspace] iconForFileType: NSFileTypeForHFSTypeCode(kAliasBadgeIcon)];
+        
+        badgedFileIcon = [NSImage imageWithSize:fileIcon.size flipped:NO drawingHandler:^BOOL (NSRect dstRect){
+            [fileIcon drawAtPoint:dstRect.origin fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
+            [aliasBadge drawAtPoint:dstRect.origin fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
+            return YES;
+        }];
+        return badgedFileIcon;
+    }
+    return fileIcon;
+}
+
+- (BOOL)isAliasFile {
+    id value = nil;
+    [self.URL getResourceValue:&value forKey:NSURLIsAliasFileKey error:nil];
+    return [value boolValue];
 }
 
 - (NSString *)documentKind {
@@ -101,9 +119,12 @@
 }
 
 - (BOOL)isDirectory {
-    id value = nil;
-    [self.URL getResourceValue:&value forKey:NSURLIsDirectoryKey error:nil];
-    return [value boolValue];
+//    id value = nil;
+//    [self.URL getResourceValue:&value forKey:NSURLIsDirectoryKey error:nil];
+    BOOL isD = NO;
+    [[NSFileManager defaultManager] fileExistsAtPath:[self.URL path] isDirectory:&isD];
+    
+    return isD;
 }
 
 - (BOOL)isPackage {
@@ -138,27 +159,44 @@
         // This logic keeps the same pointers around, if possible.
         NSMutableArray *newChildren = [NSMutableArray array];
         
-        CFURLEnumeratorRef enumerator = CFURLEnumeratorCreateForDirectoryURL(NULL, (CFURLRef)self.URL, kCFURLEnumeratorDefaultBehavior, (CFArrayRef)[NSArray array]);
-        CFURLRef childURL = nil;
-        CFURLEnumeratorResult enumeratorResult;
-        do {
-                enumeratorResult = CFURLEnumeratorGetNextURL(enumerator, &childURL, NULL);
-                if (enumeratorResult == kCFURLEnumeratorSuccess) {
-                    FileSystemNode *node = [[FileSystemNode alloc] initWithURL:(__bridge NSURL *)childURL];
-                    if (self.internalChildren != nil) {
-                        NSInteger oldIndex = [self.internalChildren indexOfObject:(__bridge NSURL *)childURL];
-                        if (oldIndex != NSNotFound) {
-                            // Use the same pointer value, if possible
-                            node = (self.internalChildren)[oldIndex];
-                        }
-                    }
-                    [newChildren addObject:node];
-                } else if (enumeratorResult == kCFURLEnumeratorError) {
-                    // A possible enhancement would be to present error-based items to the user.
+//        CFURLEnumeratorRef enumerator = CFURLEnumeratorCreateForDirectoryURL(NULL, (CFURLRef)self.URL, kCFURLEnumeratorDefaultBehavior, (CFArrayRef)[NSArray array]);
+        NSArray *fileArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[self.URL path] error:nil];
+    
+        NSURL *childURL = nil;
+//        CFURLEnumeratorResult enumeratorResult;
+    
+        for (NSString *keyPath in fileArray) {
+            NSString *fullPath = [[self.URL path] stringByAppendingFormat:@"/%@", keyPath];
+            childURL = [NSURL fileURLWithPath:fullPath];
+            FileSystemNode *node = [[FileSystemNode alloc] initWithURL:childURL];
+            if (self.internalChildren != nil) {
+                NSInteger oldIndex = [self.internalChildren indexOfObject:childURL];
+                if (oldIndex != NSNotFound) {
+                    // Use the same pointer value, if possible
+                    node = (self.internalChildren)[oldIndex];
                 }
-        } while (enumeratorResult != kCFURLEnumeratorEnd);
-        
-        CFRelease(enumerator);
+            }
+            [newChildren addObject:node];
+            
+        }
+//        do {
+//                enumeratorResult = CFURLEnumeratorGetNextURL(enumerator, &childURL, NULL);
+//                if (enumeratorResult == kCFURLEnumeratorSuccess) {
+//                    FileSystemNode *node = [[FileSystemNode alloc] initWithURL:(__bridge NSURL *)childURL];
+//                    if (self.internalChildren != nil) {
+//                        NSInteger oldIndex = [self.internalChildren indexOfObject:(__bridge NSURL *)childURL];
+//                        if (oldIndex != NSNotFound) {
+//                            // Use the same pointer value, if possible
+//                            node = (self.internalChildren)[oldIndex];
+//                        }
+//                    }
+//                    [newChildren addObject:node];
+//                } else if (enumeratorResult == kCFURLEnumeratorError) {
+//                    // A possible enhancement would be to present error-based items to the user.
+//                }
+//        } while (enumeratorResult != kCFURLEnumeratorEnd);
+    
+//        CFRelease(enumerator);
         _childrenDirty = NO;
         
         // Now sort them
