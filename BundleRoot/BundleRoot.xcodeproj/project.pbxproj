@@ -12,7 +12,6 @@
 		1D4E032D1EF252C2000710C9 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D4E032C1EF252C2000710C9 /* ViewController.m */; };
 		1D4E032F1EF252C2000710C9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D4E032E1EF252C2000710C9 /* Assets.xcassets */; };
 		1D4E03321EF252C2000710C9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1D4E03301EF252C2000710C9 /* Main.storyboard */; };
-		1D4E03451EF25311000710C9 /* ZipKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D4E03401EF2530C000710C9 /* ZipKit.framework */; };
 		1D4E03531EF25400000710C9 /* MOView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D4E034E1EF25400000710C9 /* MOView.m */; };
 		1D4E03541EF25400000710C9 /* RemainingTimeTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D4E03501EF25400000710C9 /* RemainingTimeTransformer.m */; };
 		1D4E03551EF25400000710C9 /* ZipFileOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D4E03521EF25400000710C9 /* ZipFileOperation.m */; };
@@ -33,6 +32,7 @@
 		1D4E04221EFA4C63000710C9 /* BRCheckboxCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D4E04211EFA4C63000710C9 /* BRCheckboxCellView.m */; };
 		1D4E04251EFA4C94000710C9 /* BRPopUpCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D4E04241EFA4C94000710C9 /* BRPopUpCellView.m */; };
 		1D4E04271EFBBB46000710C9 /* OK.wav in Resources */ = {isa = PBXBuildFile; fileRef = 1D4E04261EFBBB46000710C9 /* OK.wav */; };
+		1DDF5ABF1F17758000462824 /* libzipkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D4E03421EF2530C000710C9 /* libzipkit.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -236,10 +236,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1DDF5ABF1F17758000462824 /* libzipkit.a in Frameworks */,
 				1D4E04031EF27027000710C9 /* XADMaster.framework in Frameworks */,
 				1D4E04001EF27022000710C9 /* UniversalDetector.framework in Frameworks */,
 				1D4E03FE1EF2701B000710C9 /* libz.tbd in Frameworks */,
-				1D4E03451EF25311000710C9 /* ZipKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
